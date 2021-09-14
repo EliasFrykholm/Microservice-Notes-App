@@ -30,11 +30,10 @@ type createInput struct {
 }
 
 func (h *Handler) Create(response http.ResponseWriter, request *http.Request) {
-
-	response.Header().Add("content-type", "application/json")
 	inp := new(createInput)
+	response.Header().Add("content-type", "application/json")
 	if err := json.NewDecoder(request.Body).Decode(&inp); err != nil {
-		response.WriteHeader(http.StatusInternalServerError)
+		response.WriteHeader(http.StatusBadRequest)
 		response.Write([]byte(`{"message":` + err.Error() + `}`))
 		return
 	}
@@ -63,6 +62,27 @@ func (h *Handler) Get(response http.ResponseWriter, request *http.Request) {
 	}
 
 	json.NewEncoder(response).Encode(getResponse{Notes: toNotes(notes)})
+}
+
+type deleteInput struct {
+	ID string `json:"id"`
+}
+
+func (h *Handler) Delete(response http.ResponseWriter, request *http.Request) {
+	inp := new(deleteInput)
+	if err := json.NewDecoder(request.Body).Decode(&inp); err != nil {
+		response.WriteHeader(http.StatusBadRequest)
+		response.Write([]byte(`{"message":` + err.Error() + `}`))
+		return
+	}
+
+	err := h.useCase.DeleteNote(request.Context(), inp.ID)
+	if err != nil {
+		response.WriteHeader(http.StatusInternalServerError)
+		response.Write([]byte(`{"message":` + err.Error() + `}`))
+		return
+	}
+	response.WriteHeader(http.StatusOK)
 }
 
 func toNotes(notes []*models.Note) []*Note {

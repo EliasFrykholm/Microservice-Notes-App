@@ -22,3 +22,9 @@ func (m NoteUseCaseMock) GetNotes(ctx context.Context) ([]*models.Note, error) {
 
 	return args.Get(0).([]*models.Note), args.Error(1)
 }
+
+func (m NoteUseCaseMock) DeleteNote(ctx context.Context, id string) error {
+	args := m.Called(id)
+
+	return args.Error(0)
+}

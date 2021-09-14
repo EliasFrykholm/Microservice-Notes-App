@@ -22,3 +22,9 @@ func (s *NoteStorageMock) GetNotes(ctx context.Context) ([]*models.Note, error) 
 
 	return args.Get(0).([]*models.Note), args.Error(1)
 }
+
+func (s *NoteStorageMock) DeleteNote(ctx context.Context, id string) error {
+	args := s.Called(id)
+
+	return args.Error(0)
+}

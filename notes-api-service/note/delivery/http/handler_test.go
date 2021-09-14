@@ -68,3 +68,26 @@ func TestGet(t *testing.T) {
 	assert.Equal(t, 200, w.Code)
 	assert.Equal(t, string(expectedOutBody)+"\n", w.Body.String())
 }
+
+func TestDelete(t *testing.T) {
+
+	r := mux.NewRouter()
+	uc := new(usecase.NoteUseCaseMock)
+
+	RegisterHTTPEndpoints(r, uc)
+
+	inp := &deleteInput{
+		ID: "id",
+	}
+
+	body, err := json.Marshal(inp)
+	assert.NoError(t, err)
+
+	uc.On("DeleteNote", inp.ID).Return(nil)
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("DELETE", "/note", bytes.NewBuffer(body))
+	r.ServeHTTP(w, req)
+
+	assert.Equal(t, 200, w.Code)
+}

@@ -63,6 +63,15 @@ func (r NoteRepository) GetNotes(ctx context.Context) ([]*models.Note, error) {
 	return toNotes(out), nil
 }
 
+func (r NoteRepository) DeleteNote(ctx context.Context, id string) error {
+	objID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return err
+	}
+	_, err = r.db.DeleteOne(ctx, bson.M{"_id": objID})
+	return err
+}
+
 func toModel(n *models.Note) *Note {
 
 	return &Note{

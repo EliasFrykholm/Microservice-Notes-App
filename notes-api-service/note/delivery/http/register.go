@@ -10,4 +10,5 @@ func RegisterHTTPEndpoints(router *mux.Router, uc note.UseCase) {
 
 	router.HandleFunc("/note", h.Create).Methods("POST")
 	router.HandleFunc("/notes", h.Get).Methods("GET")
+	router.HandleFunc("/note", h.Delete).Methods("DELETE")
 }

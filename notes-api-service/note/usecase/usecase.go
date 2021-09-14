@@ -29,3 +29,7 @@ func (n NoteUseCase) CreateNote(ctx context.Context, title, content string) erro
 func (n NoteUseCase) GetNotes(ctx context.Context) ([]*models.Note, error) {
 	return n.noteRepo.GetNotes(ctx)
 }
+
+func (n NoteUseCase) DeleteNote(ctx context.Context, id string) error {
+	return n.noteRepo.DeleteNote(ctx, id)
+}
