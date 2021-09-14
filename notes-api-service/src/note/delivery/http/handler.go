@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/EliasFrykholm/Microservices-keep-clone/notes-api-service/models"
-	"github.com/EliasFrykholm/Microservices-keep-clone/notes-api-service/note"
+	"github.com/EliasFrykholm/Microservices-keep-clone/notes-api-service/src/models"
+	"github.com/EliasFrykholm/Microservices-keep-clone/notes-api-service/src/note"
 )
 
 type Note struct {

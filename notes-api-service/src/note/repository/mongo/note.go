@@ -3,7 +3,7 @@ package mongo
 import (
 	"context"
 
-	"github.com/EliasFrykholm/Microservices-keep-clone/notes-api-service/models"
+	"github.com/EliasFrykholm/Microservices-keep-clone/notes-api-service/src/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"

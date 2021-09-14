@@ -1,4 +1,4 @@
-module github.com/EliasFrykholm/Microservices-keep-clone/notes-api-service
+module github.com/EliasFrykholm/Microservices-keep-clone/notes-api-service/src
 
 go 1.16
 

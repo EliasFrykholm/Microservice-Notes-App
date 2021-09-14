@@ -1,7 +1,7 @@
 package http
 
 import (
-	"github.com/EliasFrykholm/Microservices-keep-clone/notes-api-service/note"
+	"github.com/EliasFrykholm/Microservices-keep-clone/notes-api-service/src/note"
 	"github.com/gorilla/mux"
 )
 

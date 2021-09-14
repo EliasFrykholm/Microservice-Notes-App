@@ -1,6 +1,7 @@
 port: 12345
 
+MONGO_URI: "mongodb://localhost:27017"
+
 mongo:
-  uri: "mongodb://localhost:27017"
   name: "keepclone"
   note_collection: "notes"

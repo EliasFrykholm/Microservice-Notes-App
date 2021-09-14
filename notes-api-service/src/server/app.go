@@ -2,16 +2,17 @@ package server
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"time"
 
-	"github.com/EliasFrykholm/Microservices-keep-clone/notes-api-service/note"
-	notehttp "github.com/EliasFrykholm/Microservices-keep-clone/notes-api-service/note/delivery/http"
-	notemongo "github.com/EliasFrykholm/Microservices-keep-clone/notes-api-service/note/repository/mongo"
-	noteusecase "github.com/EliasFrykholm/Microservices-keep-clone/notes-api-service/note/usecase"
+	"github.com/EliasFrykholm/Microservices-keep-clone/notes-api-service/src/note"
+	notehttp "github.com/EliasFrykholm/Microservices-keep-clone/notes-api-service/src/note/delivery/http"
+	notemongo "github.com/EliasFrykholm/Microservices-keep-clone/notes-api-service/src/note/repository/mongo"
+	noteusecase "github.com/EliasFrykholm/Microservices-keep-clone/notes-api-service/src/note/usecase"
 	"github.com/gorilla/mux"
 	"github.com/spf13/viper"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -54,6 +55,8 @@ func (a *App) Run(port string) error {
 		}
 	}()
 
+	fmt.Println("Successfully started server")
+
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt, os.Interrupt)
 
@@ -66,7 +69,7 @@ func (a *App) Run(port string) error {
 }
 
 func initDB() *mongo.Database {
-	client, err := mongo.NewClient(options.Client().ApplyURI(viper.GetString("mongo.uri")))
+	client, err := mongo.NewClient(options.Client().ApplyURI(viper.GetString("MONGO_URI")))
 	if err != nil {
 		log.Fatalf("Error occured while establishing connection to mongoDB")
 	}

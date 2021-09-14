@@ -8,5 +8,7 @@ func Init() error {
 	viper.AddConfigPath("./config")
 	viper.SetConfigName("config")
 
+	viper.AutomaticEnv()
+
 	return viper.ReadInConfig()
 }

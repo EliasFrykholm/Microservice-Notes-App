@@ -7,8 +7,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/EliasFrykholm/Microservices-keep-clone/notes-api-service/models"
-	"github.com/EliasFrykholm/Microservices-keep-clone/notes-api-service/note/usecase"
+	"github.com/EliasFrykholm/Microservices-keep-clone/notes-api-service/src/models"
+	"github.com/EliasFrykholm/Microservices-keep-clone/notes-api-service/src/note/usecase"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
 )

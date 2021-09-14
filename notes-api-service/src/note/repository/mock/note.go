@@ -3,7 +3,7 @@ package mock
 import (
 	"context"
 
-	"github.com/EliasFrykholm/Microservices-keep-clone/notes-api-service/models"
+	"github.com/EliasFrykholm/Microservices-keep-clone/notes-api-service/src/models"
 	"github.com/stretchr/testify/mock"
 )
 
