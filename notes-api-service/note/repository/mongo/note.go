@@ -72,6 +72,19 @@ func (r NoteRepository) DeleteNote(ctx context.Context, id string) error {
 	return err
 }
 
+func (r NoteRepository) UpdateNote(ctx context.Context, id string, note *models.Note) error {
+	model := toModel(note)
+	objID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return err
+	}
+	_, err = r.db.ReplaceOne(ctx, bson.M{"_id": objID}, model)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func toModel(n *models.Note) *Note {
 
 	return &Note{

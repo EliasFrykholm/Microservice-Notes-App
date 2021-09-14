@@ -91,3 +91,27 @@ func TestDelete(t *testing.T) {
 
 	assert.Equal(t, 200, w.Code)
 }
+
+func TestUpdate(t *testing.T) {
+	r := mux.NewRouter()
+	uc := new(usecase.NoteUseCaseMock)
+
+	RegisterHTTPEndpoints(r, uc)
+
+	inp := &updateInput{
+		ID:      "id",
+		Title:   "newTestTitle",
+		Content: "newTestContent",
+	}
+
+	body, err := json.Marshal(inp)
+	assert.NoError(t, err)
+
+	uc.On("UpdateNote", inp.ID, inp.Title, inp.Content).Return(nil)
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("PUT", "/note", bytes.NewBuffer(body))
+	r.ServeHTTP(w, req)
+
+	assert.Equal(t, 200, w.Code)
+}

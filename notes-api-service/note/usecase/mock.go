@@ -28,3 +28,9 @@ func (m NoteUseCaseMock) DeleteNote(ctx context.Context, id string) error {
 
 	return args.Error(0)
 }
+
+func (m NoteUseCaseMock) UpdateNote(ctx context.Context, id, title, content string) error {
+	args := m.Called(id, title, content)
+
+	return args.Error(0)
+}

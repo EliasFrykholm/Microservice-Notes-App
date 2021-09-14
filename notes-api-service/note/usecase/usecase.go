@@ -33,3 +33,12 @@ func (n NoteUseCase) GetNotes(ctx context.Context) ([]*models.Note, error) {
 func (n NoteUseCase) DeleteNote(ctx context.Context, id string) error {
 	return n.noteRepo.DeleteNote(ctx, id)
 }
+
+func (n NoteUseCase) UpdateNote(ctx context.Context, id, title, content string) error {
+	note := &models.Note{
+		Title:   title,
+		Content: content,
+	}
+
+	return n.noteRepo.UpdateNote(ctx, id, note)
+}
