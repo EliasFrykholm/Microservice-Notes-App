@@ -9,6 +9,16 @@ services:
       - "12345:12345"
     environment:
       MONGO_URI: mongodb://mongo:27017
+  login-service:
+    build: ./login-service
+    container_name: login-service
+    depends_on:
+      - "mongo"
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATA_MONGODB_HOST: mongo
+      LOGINSERVICE_APP_JWTSECRET: mysecret
   # MongoDB
   mongo:
     image: "mongo:4.2.6-bionic"
