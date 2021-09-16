@@ -1,7 +1,8 @@
 mongodata/*
 
 ### VisualStudioCode ###
-.vscode/*
+.vscode/
+.vscode
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
@@ -15,5 +16,7 @@ mongodata/*
 # Ignore all local history of files
 .history
 .ionide
+
+.DS_Store
 
 # End of https://www.toptal.com/developers/gitignore/api/go,visualstudiocode
