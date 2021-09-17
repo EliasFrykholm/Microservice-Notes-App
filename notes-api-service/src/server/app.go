@@ -39,7 +39,7 @@ func NewApp() *App {
 func (a *App) Run(port string) error {
 
 	router := mux.NewRouter()
-	jwtHandler := jwthandler.JwtHandler.NewJwtHandler()
+	jwtHandler := jwthandler.NewJwtHandler()
 
 	notehttp.RegisterHTTPEndpoints(router, a.noteUC, jwtHandler)
 
