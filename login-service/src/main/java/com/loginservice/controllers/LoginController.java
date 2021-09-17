@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.UnsupportedEncodingException;
 import java.rmi.AlreadyBoundException;
 
 @RestController
@@ -33,7 +34,8 @@ public class LoginController {
     JwtUtils jwtUtils;
 
     @PostMapping(value = "/login")
-    public ResponseEntity<LoginResponseDto> getMethodName(@RequestBody LoginRequestDto request) {
+    public ResponseEntity<LoginResponseDto> getMethodName(@RequestBody LoginRequestDto request)
+            throws UnsupportedEncodingException {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.username, request.password));
 

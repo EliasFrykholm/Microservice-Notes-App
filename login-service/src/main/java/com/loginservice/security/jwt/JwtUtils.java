@@ -1,5 +1,7 @@
 package com.loginservice.security.jwt;
 
+import java.io.UnsupportedEncodingException;
+import java.security.Key;
 import java.util.Date;
 
 import com.loginservice.security.MyUserDetails;
@@ -8,6 +10,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.*;
+
+import javax.crypto.spec.SecretKeySpec;
+import javax.xml.bind.DatatypeConverter;
 
 @Component
 public class JwtUtils {
@@ -18,16 +23,16 @@ public class JwtUtils {
     @Value("${loginservice.app.jwtExpirationMs}")
     private int jwtExpirationMs;
 
-    public String generateJwtToken(Authentication authentication) {
+    public String generateJwtToken(Authentication authentication) throws UnsupportedEncodingException {
 
         MyUserDetails userPrincipal = (MyUserDetails) authentication.getPrincipal();
-
+        System.out.println(jwtSecret);
         return Jwts.builder()
                 .setSubject((userPrincipal.getUsername()))
                 .setId(userPrincipal.getId())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
-                .signWith(SignatureAlgorithm.HS256, jwtSecret)
+                .signWith(SignatureAlgorithm.HS512, jwtSecret.getBytes("UTF-8"))
                 .compact();
     }
 

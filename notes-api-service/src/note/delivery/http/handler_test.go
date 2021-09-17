@@ -9,6 +9,7 @@ import (
 
 	"github.com/EliasFrykholm/Microservices-keep-clone/notes-api-service/src/models"
 	"github.com/EliasFrykholm/Microservices-keep-clone/notes-api-service/src/note/usecase"
+	"github.com/EliasFrykholm/Microservices-keep-clone/notes-api-service/src/utils"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
 )
@@ -18,8 +19,9 @@ func TestCreate(t *testing.T) {
 	router := mux.NewRouter()
 
 	uc := new(usecase.NoteUseCaseMock)
+	jwt := new(utils.JwtHandlerMock)
 
-	RegisterHTTPEndpoints(router, uc)
+	RegisterHTTPEndpoints(router, uc, jwt)
 
 	inp := &createInput{
 		Title:   "testtitle",
@@ -29,7 +31,7 @@ func TestCreate(t *testing.T) {
 	body, err := json.Marshal(inp)
 	assert.NoError(t, err)
 
-	uc.On("CreateNote", inp.Title, inp.Content).Return(nil)
+	uc.On("CreateNote", "test", inp.Title, inp.Content).Return(nil)
 
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("POST", "/note", bytes.NewBuffer(body))
@@ -42,19 +44,21 @@ func TestGet(t *testing.T) {
 
 	r := mux.NewRouter()
 	uc := new(usecase.NoteUseCaseMock)
+	jwt := new(utils.JwtHandlerMock)
 
-	RegisterHTTPEndpoints(r, uc)
+	RegisterHTTPEndpoints(r, uc, jwt)
 
 	notes := make([]*models.Note, 5)
 	for i := 0; i < 5; i++ {
 		notes[i] = &models.Note{
+			Owner:   "test",
 			ID:      "id",
 			Title:   "title",
 			Content: "content",
 		}
 	}
 
-	uc.On("GetNotes").Return(notes, nil)
+	uc.On("GetNotes", "test").Return(notes, nil)
 
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/notes", nil)
@@ -73,8 +77,9 @@ func TestDelete(t *testing.T) {
 
 	r := mux.NewRouter()
 	uc := new(usecase.NoteUseCaseMock)
+	jwt := new(utils.JwtHandlerMock)
 
-	RegisterHTTPEndpoints(r, uc)
+	RegisterHTTPEndpoints(r, uc, jwt)
 
 	inp := &deleteInput{
 		ID: "id",
@@ -83,7 +88,7 @@ func TestDelete(t *testing.T) {
 	body, err := json.Marshal(inp)
 	assert.NoError(t, err)
 
-	uc.On("DeleteNote", inp.ID).Return(nil)
+	uc.On("DeleteNote", "test", inp.ID).Return(nil)
 
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("DELETE", "/note", bytes.NewBuffer(body))
@@ -95,8 +100,9 @@ func TestDelete(t *testing.T) {
 func TestUpdate(t *testing.T) {
 	r := mux.NewRouter()
 	uc := new(usecase.NoteUseCaseMock)
+	jwt := new(utils.JwtHandlerMock)
 
-	RegisterHTTPEndpoints(r, uc)
+	RegisterHTTPEndpoints(r, uc, jwt)
 
 	inp := &updateInput{
 		ID:      "id",
@@ -107,7 +113,7 @@ func TestUpdate(t *testing.T) {
 	body, err := json.Marshal(inp)
 	assert.NoError(t, err)
 
-	uc.On("UpdateNote", inp.ID, inp.Title, inp.Content).Return(nil)
+	uc.On("UpdateNote", "test", inp.ID, inp.Title, inp.Content).Return(nil)
 
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("PUT", "/note", bytes.NewBuffer(body))

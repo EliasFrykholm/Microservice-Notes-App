@@ -13,6 +13,7 @@ import (
 	notehttp "github.com/EliasFrykholm/Microservices-keep-clone/notes-api-service/src/note/delivery/http"
 	notemongo "github.com/EliasFrykholm/Microservices-keep-clone/notes-api-service/src/note/repository/mongo"
 	noteusecase "github.com/EliasFrykholm/Microservices-keep-clone/notes-api-service/src/note/usecase"
+	jwthandler "github.com/EliasFrykholm/Microservices-keep-clone/notes-api-service/src/utils"
 	"github.com/gorilla/mux"
 	"github.com/spf13/viper"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -38,8 +39,9 @@ func NewApp() *App {
 func (a *App) Run(port string) error {
 
 	router := mux.NewRouter()
+	jwtHandler := jwthandler.JwtHandler.NewJwtHandler()
 
-	notehttp.RegisterHTTPEndpoints(router, a.noteUC)
+	notehttp.RegisterHTTPEndpoints(router, a.noteUC, jwtHandler)
 
 	a.httpServer = &http.Server{
 		Addr:           ":" + port,

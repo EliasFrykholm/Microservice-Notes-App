@@ -11,6 +11,7 @@ import (
 
 type Note struct {
 	ID      primitive.ObjectID `bson:"_id,omitempty"`
+	Owner   string             `bson:"owner"`
 	Title   string             `bson:"title"`
 	Content string             `bson:"content"`
 }
@@ -37,8 +38,8 @@ func (r NoteRepository) CreateNote(ctx context.Context, note *models.Note) error
 	return nil
 }
 
-func (r NoteRepository) GetNotes(ctx context.Context) ([]*models.Note, error) {
-	cur, err := r.db.Find(ctx, bson.M{})
+func (r NoteRepository) GetNotes(ctx context.Context, user string) ([]*models.Note, error) {
+	cur, err := r.db.Find(ctx, bson.M{"owner": user})
 	defer cur.Close(ctx)
 
 	if err != nil {
@@ -63,12 +64,12 @@ func (r NoteRepository) GetNotes(ctx context.Context) ([]*models.Note, error) {
 	return toNotes(out), nil
 }
 
-func (r NoteRepository) DeleteNote(ctx context.Context, id string) error {
+func (r NoteRepository) DeleteNote(ctx context.Context, user, id string) error {
 	objID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return err
 	}
-	_, err = r.db.DeleteOne(ctx, bson.M{"_id": objID})
+	_, err = r.db.DeleteOne(ctx, bson.M{"_id": objID, "owner": user})
 	return err
 }
 
@@ -78,7 +79,7 @@ func (r NoteRepository) UpdateNote(ctx context.Context, id string, note *models.
 	if err != nil {
 		return err
 	}
-	_, err = r.db.ReplaceOne(ctx, bson.M{"_id": objID}, model)
+	_, err = r.db.ReplaceOne(ctx, bson.M{"_id": objID, "owner": note.Owner}, model)
 	if err != nil {
 		return err
 	}
@@ -88,6 +89,7 @@ func (r NoteRepository) UpdateNote(ctx context.Context, id string, note *models.
 func toModel(n *models.Note) *Note {
 
 	return &Note{
+		Owner:   n.Owner,
 		Title:   n.Title,
 		Content: n.Content,
 	}
@@ -96,6 +98,7 @@ func toModel(n *models.Note) *Note {
 func toNote(n *Note) *models.Note {
 	return &models.Note{
 		ID:      n.ID.Hex(),
+		Owner:   n.Owner,
 		Title:   n.Title,
 		Content: n.Content,
 	}

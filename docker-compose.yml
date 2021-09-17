@@ -9,6 +9,7 @@ services:
       - "12345:12345"
     environment:
       MONGO_URI: mongodb://mongo:27017
+      LOGINSERVICE_APP_JWTSECRET: thiskeyisnotusedforproductiononlyfordevelopmentpurposes
   login-service:
     build: ./login-service
     container_name: login-service
@@ -18,7 +19,7 @@ services:
       - "8080:8080"
     environment:
       SPRING_DATA_MONGODB_HOST: mongo
-      LOGINSERVICE_APP_JWTSECRET: mysecret
+      LOGINSERVICE_APP_JWTSECRET: thiskeyisnotusedforproductiononlyfordevelopmentpurposes
   # MongoDB
   mongo:
     image: "mongo:4.2.6-bionic"

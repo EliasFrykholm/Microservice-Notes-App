@@ -11,26 +11,26 @@ type NoteUseCaseMock struct {
 	mock.Mock
 }
 
-func (m NoteUseCaseMock) CreateNote(ctx context.Context, title, content string) error {
-	args := m.Called(title, content)
+func (m NoteUseCaseMock) CreateNote(ctx context.Context, user, title, content string) error {
+	args := m.Called(user, title, content)
 
 	return args.Error(0)
 }
 
-func (m NoteUseCaseMock) GetNotes(ctx context.Context) ([]*models.Note, error) {
-	args := m.Called()
+func (m NoteUseCaseMock) GetNotes(ctx context.Context, user string) ([]*models.Note, error) {
+	args := m.Called(user)
 
 	return args.Get(0).([]*models.Note), args.Error(1)
 }
 
-func (m NoteUseCaseMock) DeleteNote(ctx context.Context, id string) error {
-	args := m.Called(id)
+func (m NoteUseCaseMock) DeleteNote(ctx context.Context, user, id string) error {
+	args := m.Called(user, id)
 
 	return args.Error(0)
 }
 
-func (m NoteUseCaseMock) UpdateNote(ctx context.Context, id, title, content string) error {
-	args := m.Called(id, title, content)
+func (m NoteUseCaseMock) UpdateNote(ctx context.Context, user, id, title, content string) error {
+	args := m.Called(user, id, title, content)
 
 	return args.Error(0)
 }

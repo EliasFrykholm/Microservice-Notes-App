@@ -6,6 +6,7 @@ import (
 
 	"github.com/EliasFrykholm/Microservices-keep-clone/notes-api-service/src/models"
 	"github.com/EliasFrykholm/Microservices-keep-clone/notes-api-service/src/note"
+	"github.com/EliasFrykholm/Microservices-keep-clone/notes-api-service/src/utils"
 )
 
 type Note struct {
@@ -15,12 +16,14 @@ type Note struct {
 }
 
 type Handler struct {
-	useCase note.UseCase
+	useCase    note.UseCase
+	jwtHandler utils.JwtHandlerInterface
 }
 
-func NewHandler(useCase note.UseCase) *Handler {
+func NewHandler(useCase note.UseCase, jwtHandler utils.JwtHandlerInterface) *Handler {
 	return &Handler{
-		useCase: useCase,
+		useCase:    useCase,
+		jwtHandler: jwtHandler,
 	}
 }
 
@@ -30,6 +33,13 @@ type createInput struct {
 }
 
 func (h *Handler) Create(response http.ResponseWriter, request *http.Request) {
+	tokenAuth, err := h.jwtHandler.ExtractTokenMetadata(request)
+	if err != nil {
+		response.WriteHeader(http.StatusUnauthorized)
+		response.Write([]byte(`{"message":` + err.Error() + `}`))
+		return
+	}
+
 	inp := new(createInput)
 	if err := json.NewDecoder(request.Body).Decode(&inp); err != nil {
 		response.WriteHeader(http.StatusBadRequest)
@@ -37,7 +47,7 @@ func (h *Handler) Create(response http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	err := h.useCase.CreateNote(request.Context(), inp.Title, inp.Content)
+	err = h.useCase.CreateNote(request.Context(), tokenAuth.UserId, inp.Title, inp.Content)
 
 	if err != nil {
 		response.WriteHeader(http.StatusInternalServerError)
@@ -52,8 +62,15 @@ type getResponse struct {
 }
 
 func (h *Handler) Get(response http.ResponseWriter, request *http.Request) {
+	tokenAuth, err := h.jwtHandler.ExtractTokenMetadata(request)
+	if err != nil {
+		response.WriteHeader(http.StatusUnauthorized)
+		response.Write([]byte(`{"message":` + err.Error() + `}`))
+		return
+	}
+
 	response.Header().Add("content-type", "application/json")
-	notes, err := h.useCase.GetNotes(request.Context())
+	notes, err := h.useCase.GetNotes(request.Context(), tokenAuth.UserId)
 	if err != nil {
 		response.WriteHeader(http.StatusInternalServerError)
 		response.Write([]byte(`{"message":` + err.Error() + `}`))
@@ -68,6 +85,13 @@ type deleteInput struct {
 }
 
 func (h *Handler) Delete(response http.ResponseWriter, request *http.Request) {
+	tokenAuth, err := h.jwtHandler.ExtractTokenMetadata(request)
+	if err != nil {
+		response.WriteHeader(http.StatusUnauthorized)
+		response.Write([]byte(`{"message":` + err.Error() + `}`))
+		return
+	}
+
 	inp := new(deleteInput)
 	if err := json.NewDecoder(request.Body).Decode(&inp); err != nil {
 		response.WriteHeader(http.StatusBadRequest)
@@ -75,7 +99,7 @@ func (h *Handler) Delete(response http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	err := h.useCase.DeleteNote(request.Context(), inp.ID)
+	err = h.useCase.DeleteNote(request.Context(), tokenAuth.UserId, inp.ID)
 	if err != nil {
 		response.WriteHeader(http.StatusInternalServerError)
 		response.Write([]byte(`{"message":` + err.Error() + `}`))
@@ -91,6 +115,13 @@ type updateInput struct {
 }
 
 func (h *Handler) Update(response http.ResponseWriter, request *http.Request) {
+	tokenAuth, err := h.jwtHandler.ExtractTokenMetadata(request)
+	if err != nil {
+		response.WriteHeader(http.StatusUnauthorized)
+		response.Write([]byte(`{"message":` + err.Error() + `}`))
+		return
+	}
+
 	inp := new(updateInput)
 	if err := json.NewDecoder(request.Body).Decode(&inp); err != nil {
 		response.WriteHeader(http.StatusBadRequest)
@@ -98,7 +129,7 @@ func (h *Handler) Update(response http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	err := h.useCase.UpdateNote(request.Context(), inp.ID, inp.Title, inp.Content)
+	err = h.useCase.UpdateNote(request.Context(), tokenAuth.UserId, inp.ID, inp.Title, inp.Content)
 	if err != nil {
 		response.WriteHeader(http.StatusInternalServerError)
 		response.Write([]byte(`{"message":` + err.Error() + `}`))
