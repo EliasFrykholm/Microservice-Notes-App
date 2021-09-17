@@ -2,12 +2,13 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { ThemeProvider } from '@material-ui/styles'
 import App from './App'
-import { themeOptions } from './styles/theme'
 import reportWebVitals from './reportWebVitals'
+import theme from './styles/theme'
+import './index.css'
 
 ReactDOM.render(
   <React.StrictMode>
-    <ThemeProvider theme={themeOptions}>
+    <ThemeProvider theme={theme}>
       <App />
     </ThemeProvider>
   </React.StrictMode>,
