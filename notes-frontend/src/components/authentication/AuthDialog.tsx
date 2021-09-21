@@ -1,11 +1,4 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogActions,
-  Avatar,
-  Typography,
-} from '@material-ui/core'
+import { Dialog, DialogContent, DialogActions } from '@material-ui/core'
 import { useState } from 'react'
 import SignInForm from './SignInForm'
 import SignUpForm from './SignUpForm'

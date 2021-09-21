@@ -1,4 +1,4 @@
-import { Avatar, Button, Grid, TextField, Typography } from '@material-ui/core'
+import { Button, Grid, TextField, Typography } from '@material-ui/core'
 
 type SignInFormProps = {
   onSignIn: () => void
