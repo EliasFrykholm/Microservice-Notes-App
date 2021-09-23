@@ -8,17 +8,13 @@ import {
   Theme,
   TextField,
   Button,
-  ListItemIcon,
-  List,
-  ListItem,
-  Checkbox,
-  ListItemText,
-  ListItemSecondaryAction,
 } from '@material-ui/core'
-import { Add, CheckBox, Delete, Palette } from '@material-ui/icons'
+import { CheckBox, Palette } from '@material-ui/icons'
 import { useRef, useState } from 'react'
 import NoteType from '../Models/NoteType'
 import useOutsideClick from '../hooks/useOutsideClick'
+import TextNoteInput from './inputs/TextNoteInput'
+import ListNoteInput from './inputs/ListNoteInput'
 
 type CreateNoteCardProps = {
   onSubmit: (content: string | string[], title?: string) => void
@@ -31,10 +27,6 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingRight: theme.spacing(2),
       paddingLeft: theme.spacing(2),
       cursor: 'text',
-    },
-    NoteContent: {
-      maxHeight: '500px',
-      overflow: 'auto',
     },
     InputComponent: {
       paddingTop: theme.spacing(2),
@@ -89,7 +81,6 @@ const CreateNoteCard = ({ onSubmit }: CreateNoteCardProps) => {
   const classes = useStyles()
   const [formState, setFormState] = useState<FormState>({})
 
-  const listInputRefs = useRef<any[]>([])
   const wrapperRef = useRef(null)
 
   const handleSubmit = () => {
@@ -104,44 +95,6 @@ const CreateNoteCard = ({ onSubmit }: CreateNoteCardProps) => {
     () => formState.active !== undefined && handleSubmit(),
   )
 
-  const addListItem = () =>
-    setFormState({
-      ...formState,
-      Content: [...(formState.Content as string[]), ''],
-    })
-
-  const handleListKeyPress = (
-    e: React.KeyboardEvent<HTMLDivElement>,
-    index: number,
-  ) => {
-    if (e.key === 'Enter' || e.key === 'Tab') {
-      e.preventDefault()
-      if (index === (formState.Content as string[]).length - 1) {
-        addListItem()
-      } else {
-        listInputRefs.current[index + 1].focus()
-      }
-    }
-  }
-
-  const handleListNoteItemChange = (value: string, index: number) => {
-    const newContent = (formState.Content as string[]).slice()
-    newContent[index] = value
-    setFormState({
-      ...formState,
-      Content: newContent,
-    })
-  }
-
-  const handleListItemDelete = (index: number) => {
-    const newContent = [...(formState.Content as string[])]
-    newContent.splice(index, 1)
-    setFormState({
-      ...formState,
-      Content: newContent,
-    })
-  }
-
   const handleListTypeChange = (type: NoteType | undefined) =>
     formState.active !== type && setFormState(getDefaultState(type))
 
@@ -149,66 +102,21 @@ const CreateNoteCard = ({ onSubmit }: CreateNoteCardProps) => {
     switch (formState.active) {
       case NoteType.Note:
         return (
-          <TextField
-            inputProps={{
-              className: classes.ContentInput,
-            }}
+          <TextNoteInput
+            value={formState.Content as string}
+            onChange={(content) =>
+              setFormState({ ...formState, Content: content })
+            }
             maxRows={15}
-            variant="outlined"
-            multiline
-            label="Create note ..."
-            value={formState.Content}
-            onChange={(e) => {
-              setFormState({
-                ...formState,
-                Content: e.target.value,
-              })
-            }}
-            autoFocus
-            fullWidth
           />
         )
       case NoteType.List:
         return (
-          <>
-            <List className={classes.NoteContent}>
-              {(formState.Content as string[]).map((value, index) => (
-                <ListItem>
-                  <ListItemIcon>
-                    <Checkbox />
-                  </ListItemIcon>
-                  <TextField
-                    fullWidth
-                    label="Todo item"
-                    value={value}
-                    onChange={(e) =>
-                      handleListNoteItemChange(e.target.value, index)
-                    }
-                    onKeyDown={(e) => handleListKeyPress(e, index)}
-                    inputRef={(ref) => {
-                      listInputRefs.current[index] = ref
-                    }}
-                    autoFocus={
-                      index === (formState.Content as string[]).length - 1
-                    }
-                  />
-                  {(formState.Content as string[]).length > 1 && (
-                    <ListItemSecondaryAction>
-                      <IconButton onClick={() => handleListItemDelete(index)}>
-                        <Delete />
-                      </IconButton>
-                    </ListItemSecondaryAction>
-                  )}
-                </ListItem>
-              ))}
-              <ListItem button onClick={addListItem}>
-                <ListItemIcon>
-                  <Add />
-                </ListItemIcon>
-                <ListItemText>Add Todo</ListItemText>
-              </ListItem>
-            </List>
-          </>
+          <ListNoteInput
+            items={formState.Content as string[]}
+            onChange={(items) => setFormState({ ...formState, Content: items })}
+            maxHeight="500px"
+          />
         )
       default:
         return undefined
