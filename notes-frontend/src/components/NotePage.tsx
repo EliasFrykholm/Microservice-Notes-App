@@ -1,4 +1,4 @@
-import { Theme, Fab, Grid, Box } from '@material-ui/core'
+import { Theme, Fab, Grid } from '@material-ui/core'
 import { Add } from '@material-ui/icons'
 import { makeStyles, createStyles } from '@material-ui/core/styles'
 import Masonry from 'react-masonry-css'
@@ -33,6 +33,11 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
+const onAddNote = (content: string | string[], title?: string) => {
+  console.log(title)
+  console.log(content)
+}
+
 const notes: Note[] = [
   {
     Content: 'test',
@@ -66,7 +71,7 @@ const NotePage = () => {
     <div className={classes.noteContainer}>
       <Grid container spacing={3} direction="column">
         <Grid item xs container justifyContent="center">
-          <CreateNoteCard />
+          <CreateNoteCard onSubmit={onAddNote} />
         </Grid>
         <Grid item xs>
           <Masonry

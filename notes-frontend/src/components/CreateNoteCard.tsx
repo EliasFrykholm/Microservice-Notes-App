@@ -17,8 +17,12 @@ import {
 } from '@material-ui/core'
 import { Add, CheckBox, Delete, Palette } from '@material-ui/icons'
 import { useRef, useState } from 'react'
-import Note from '../Models/Note'
 import NoteType from '../Models/NoteType'
+import useOutsideClick from '../hooks/useOutsideClick'
+
+type CreateNoteCardProps = {
+  onSubmit: (content: string | string[], title?: string) => void
+}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -42,12 +46,22 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 type FormState = {
-  note?: {
-    Title?: string
-    Content?: string | string[]
-    Created?: Date
-  }
+  Title?: string
+  Content?: string | string[]
   active?: NoteType
+}
+
+const isInputOk = (title?: string, content?: string | string[]) => {
+  if (content && Array.isArray(content) && content.some((e) => e)) {
+    return true
+  }
+  if (title) {
+    return true
+  }
+  if (content?.toString()) {
+    return true
+  }
+  return false
 }
 
 const getDefaultContent = (type: NoteType): string | string[] => {
@@ -61,30 +75,39 @@ const getDefaultContent = (type: NoteType): string | string[] => {
   }
 }
 
-const getDefaultNote = (type?: NoteType): Note | undefined => {
-  if (type)
+const getDefaultState = (type?: NoteType): FormState => {
+  if (type !== undefined)
     return {
       Title: '',
-      Created: new Date(),
-      Id: '',
       Content: getDefaultContent(type),
+      active: type,
     }
-  return undefined
+  return {}
 }
 
-const CreateNoteCard = () => {
+const CreateNoteCard = ({ onSubmit }: CreateNoteCardProps) => {
   const classes = useStyles()
   const [formState, setFormState] = useState<FormState>({})
 
   const listInputRefs = useRef<any[]>([])
+  const wrapperRef = useRef(null)
+
+  const handleSubmit = () => {
+    if (isInputOk(formState.Title, formState.Content)) {
+      onSubmit(formState.Content as string | string[], formState.Title)
+    }
+    setFormState(getDefaultState())
+  }
+
+  useOutsideClick(
+    wrapperRef,
+    () => formState.active !== undefined && handleSubmit(),
+  )
 
   const addListItem = () =>
     setFormState({
       ...formState,
-      note: {
-        ...formState.note,
-        Content: [...(formState.note?.Content as string[]), ''],
-      },
+      Content: [...(formState.Content as string[]), ''],
     })
 
   const handleListKeyPress = (
@@ -93,7 +116,7 @@ const CreateNoteCard = () => {
   ) => {
     if (e.key === 'Enter' || e.key === 'Tab') {
       e.preventDefault()
-      if (index === (formState.note?.Content as string[]).length - 1) {
+      if (index === (formState.Content as string[]).length - 1) {
         addListItem()
       } else {
         listInputRefs.current[index + 1].focus()
@@ -102,26 +125,25 @@ const CreateNoteCard = () => {
   }
 
   const handleListNoteItemChange = (value: string, index: number) => {
-    const newContent = (formState.note?.Content as string[]).slice()
+    const newContent = (formState.Content as string[]).slice()
     newContent[index] = value
     setFormState({
       ...formState,
-      note: { ...formState.note, Content: newContent },
+      Content: newContent,
     })
   }
 
   const handleListItemDelete = (index: number) => {
-    const newContent = [...(formState.note?.Content as string[])]
+    const newContent = [...(formState.Content as string[])]
     newContent.splice(index, 1)
     setFormState({
       ...formState,
-      note: { ...formState.note, Content: newContent },
+      Content: newContent,
     })
   }
 
   const handleListTypeChange = (type: NoteType | undefined) =>
-    formState.active !== type &&
-    setFormState({ note: getDefaultNote(type), active: type })
+    formState.active !== type && setFormState(getDefaultState(type))
 
   const renderContentInput = (): JSX.Element | undefined => {
     switch (formState.active) {
@@ -135,11 +157,11 @@ const CreateNoteCard = () => {
             variant="outlined"
             multiline
             label="Create note ..."
-            value={formState.note?.Content}
+            value={formState.Content}
             onChange={(e) => {
               setFormState({
                 ...formState,
-                note: { ...formState.note, Content: e.target.value },
+                Content: e.target.value,
               })
             }}
             autoFocus
@@ -150,7 +172,7 @@ const CreateNoteCard = () => {
         return (
           <>
             <List className={classes.NoteContent}>
-              {(formState.note?.Content as string[]).map((value, index) => (
+              {(formState.Content as string[]).map((value, index) => (
                 <ListItem>
                   <ListItemIcon>
                     <Checkbox />
@@ -167,10 +189,10 @@ const CreateNoteCard = () => {
                       listInputRefs.current[index] = ref
                     }}
                     autoFocus={
-                      index === (formState.note?.Content as string[]).length - 1
+                      index === (formState.Content as string[]).length - 1
                     }
                   />
-                  {(formState.note?.Content as string[]).length > 1 && (
+                  {(formState.Content as string[]).length > 1 && (
                     <ListItemSecondaryAction>
                       <IconButton onClick={() => handleListItemDelete(index)}>
                         <Delete />
@@ -197,7 +219,10 @@ const CreateNoteCard = () => {
     <Card
       className={classes.CreateNoteCard}
       elevation={3}
-      onClick={() => !formState.active && handleListTypeChange(NoteType.Note)}
+      onClick={() =>
+        formState.active === undefined && handleListTypeChange(NoteType.Note)
+      }
+      ref={wrapperRef}
     >
       {formState.active !== undefined ? (
         <Grid
@@ -214,6 +239,10 @@ const CreateNoteCard = () => {
                 className: classes.TitleInput,
               }}
               label="Title"
+              value={formState.Title}
+              onChange={(e) =>
+                setFormState({ ...formState, Title: e.target.value })
+              }
             />
           </Grid>
           <Grid item>{renderContentInput()}</Grid>
@@ -225,7 +254,7 @@ const CreateNoteCard = () => {
             </Grid>
             <Grid item xs container justifyContent="flex-end">
               <Button
-                onClick={(e) => {
+                onClick={() => {
                   handleListTypeChange(undefined)
                 }}
               >
