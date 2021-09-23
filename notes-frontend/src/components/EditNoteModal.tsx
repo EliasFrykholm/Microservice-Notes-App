@@ -10,6 +10,8 @@ import {
   DialogActions,
 } from '@material-ui/core'
 import Note from '../Models/Note'
+import NoteInput from './inputs/NoteInput'
+import NoteType from '../Models/NoteType'
 
 type EditNoteModalProps = {
   open: boolean
@@ -20,7 +22,9 @@ type EditNoteModalProps = {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    titleInput: theme.typography.h4,
+    container: {
+      padding: theme.spacing(3),
+    },
   }),
 )
 
@@ -38,32 +42,16 @@ const EditNoteModal = ({
       scroll="paper"
       maxWidth="md"
       fullWidth
+      PaperProps={{ className: classes.container }}
     >
       {note ? (
-        <>
-          <DialogTitle>
-            <TextField
-              value={note.Title}
-              onChange={(e) => onChange({ ...note, Title: e.target.value })}
-              variant="outlined"
-              fullWidth
-              inputProps={{
-                className: classes.titleInput,
-              }}
-            />
-          </DialogTitle>
-          <DialogContent>
-            <TextField
-              value={note.Content}
-              variant="outlined"
-              onChange={(e) => onChange({ ...note, Content: e.target.value })}
-              multiline
-              minRows={30}
-              fullWidth
-            />
-          </DialogContent>
-          <DialogActions />
-        </>
+        <NoteInput
+          note={note}
+          onChange={(value) => onChange({ ...note, ...value })}
+          type={NoteType.Note}
+          onAbort={onClose}
+          minNoteRows={15}
+        />
       ) : (
         <Typography>Note content not available</Typography>
       )}
