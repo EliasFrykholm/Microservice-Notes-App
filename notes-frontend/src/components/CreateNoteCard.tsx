@@ -6,15 +6,12 @@ import {
   makeStyles,
   createStyles,
   Theme,
-  TextField,
-  Button,
 } from '@material-ui/core'
-import { CheckBox, Palette } from '@material-ui/icons'
+import { CheckBox } from '@material-ui/icons'
 import { useRef, useState } from 'react'
 import NoteType from '../Models/NoteType'
 import useOutsideClick from '../hooks/useOutsideClick'
-import TextNoteInput from './inputs/TextNoteInput'
-import ListNoteInput from './inputs/ListNoteInput'
+import NoteInput from './inputs/NoteInput'
 
 type CreateNoteCardProps = {
   onSubmit: (content: string | string[], title?: string) => void
@@ -98,31 +95,6 @@ const CreateNoteCard = ({ onSubmit }: CreateNoteCardProps) => {
   const handleListTypeChange = (type: NoteType | undefined) =>
     formState.active !== type && setFormState(getDefaultState(type))
 
-  const renderContentInput = (): JSX.Element | undefined => {
-    switch (formState.active) {
-      case NoteType.Note:
-        return (
-          <TextNoteInput
-            value={formState.Content as string}
-            onChange={(content) =>
-              setFormState({ ...formState, Content: content })
-            }
-            maxRows={15}
-          />
-        )
-      case NoteType.List:
-        return (
-          <ListNoteInput
-            items={formState.Content as string[]}
-            onChange={(items) => setFormState({ ...formState, Content: items })}
-            maxHeight="500px"
-          />
-        )
-      default:
-        return undefined
-    }
-  }
-
   return (
     <Card
       className={classes.CreateNoteCard}
@@ -132,45 +104,17 @@ const CreateNoteCard = ({ onSubmit }: CreateNoteCardProps) => {
       }
       ref={wrapperRef}
     >
-      {formState.active !== undefined ? (
-        <Grid
-          container
-          spacing={2}
-          direction="column"
-          className={classes.InputComponent}
-        >
-          <Grid item>
-            <TextField
-              fullWidth
-              variant="outlined"
-              inputProps={{
-                className: classes.TitleInput,
-              }}
-              label="Title"
-              value={formState.Title}
-              onChange={(e) =>
-                setFormState({ ...formState, Title: e.target.value })
-              }
-            />
-          </Grid>
-          <Grid item>{renderContentInput()}</Grid>
-          <Grid item container direction="row">
-            <Grid item>
-              <IconButton>
-                <Palette />
-              </IconButton>
-            </Grid>
-            <Grid item xs container justifyContent="flex-end">
-              <Button
-                onClick={() => {
-                  handleListTypeChange(undefined)
-                }}
-              >
-                Cancel
-              </Button>
-            </Grid>
-          </Grid>
-        </Grid>
+      {formState.active !== undefined &&
+      formState.Content !== undefined &&
+      formState.Title !== undefined ? (
+        <NoteInput
+          note={{ Content: formState.Content, Title: formState.Title }}
+          onChange={(note) => setFormState({ ...formState, ...note })}
+          onAbort={() => handleListTypeChange(undefined)}
+          type={formState.active}
+          maxListRows={15}
+          maxNoteHeight="500px"
+        />
       ) : (
         <Grid container spacing={2} direction="column">
           <Grid item container spacing={2} alignItems="center">

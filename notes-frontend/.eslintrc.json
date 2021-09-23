@@ -29,6 +29,7 @@
         "@typescript-eslint/explicit-module-boundary-types": "off",
         "react/jsx-one-expression-per-line": "off",
         "no-use-before-define": "off",
+        "react/require-default-props" : "off",
         "react-hooks/rules-of-hooks": "error",
         "react-hooks/exhaustive-deps": "warn",
         "no-shadow": "off",

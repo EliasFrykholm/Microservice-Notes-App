@@ -3,7 +3,8 @@ import { TextField, makeStyles, createStyles, Theme } from '@material-ui/core'
 type TextNoteContentInputProps = {
   value: string
   onChange: (value: string) => void
-  maxRows: number | undefined
+  maxRows?: number
+  minRows?: number
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -16,6 +17,7 @@ const TextNoteContentInput = ({
   value,
   onChange,
   maxRows,
+  minRows,
 }: TextNoteContentInputProps) => {
   const classes = useStyles()
 
@@ -25,6 +27,7 @@ const TextNoteContentInput = ({
         className: classes.ContentInput,
       }}
       maxRows={maxRows}
+      minRows={minRows}
       variant="outlined"
       multiline
       label="Create note ..."

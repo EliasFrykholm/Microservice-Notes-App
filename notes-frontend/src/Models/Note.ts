@@ -1,7 +1,7 @@
-type Note = {
+import NoteDescription from './NoteDescription'
+
+interface Note extends NoteDescription {
   Id: string
-  Title: string
-  Content: string | string[]
   Created: Date
 }
 
