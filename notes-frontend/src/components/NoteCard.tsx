@@ -5,6 +5,7 @@ import {
   CardHeader,
   IconButton,
   Theme,
+  CardActionArea,
 } from '@material-ui/core'
 import { MoreVert } from '@material-ui/icons'
 import { createStyles, makeStyles } from '@material-ui/styles'
@@ -12,6 +13,7 @@ import Note from '../Models/Note'
 
 type NoteCardProps = {
   note: Note
+  onClick: () => void
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -19,6 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
     card: {
       maxHeight: '300px',
       minWidth: '250px',
+      maxWidth: '600px',
       overflow: 'hidden',
     },
     cardHeader: {
@@ -31,27 +34,29 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const NoteCard = ({ note }: NoteCardProps) => {
+const NoteCard = ({ note, onClick }: NoteCardProps) => {
   const classes = useStyles()
   return (
     <Card className={classes.card} elevation={3}>
-      <CardHeader
-        classes={{ root: classes.cardHeader, content: classes.cardHeader }}
-        action={
-          <IconButton aria-label="settings">
-            <MoreVert />
-          </IconButton>
-        }
-        title={note.Title}
-        subheader={note.Created.toLocaleString()}
-        subheaderTypographyProps={{ variant: 'caption' }}
-        titleTypographyProps={{ variant: 'subtitle1', noWrap: true }}
-      />
-      <CardContent className={classes.cardContent}>
-        <Typography className={classes.cardContent} variant="body2">
-          {note.Content}
-        </Typography>
-      </CardContent>
+      <CardActionArea onClick={onClick}>
+        <CardHeader
+          classes={{ root: classes.cardHeader, content: classes.cardHeader }}
+          action={
+            <IconButton aria-label="settings">
+              <MoreVert />
+            </IconButton>
+          }
+          title={note.Title}
+          subheader={note.Created.toLocaleString()}
+          subheaderTypographyProps={{ variant: 'caption' }}
+          titleTypographyProps={{ variant: 'subtitle1', noWrap: true }}
+        />
+        <CardContent className={classes.cardContent}>
+          <Typography className={classes.cardContent} variant="body2">
+            {note.Content}
+          </Typography>
+        </CardContent>
+      </CardActionArea>
     </Card>
   )
 }

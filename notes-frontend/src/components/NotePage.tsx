@@ -1,9 +1,11 @@
-import { Theme, Fab } from '@material-ui/core'
+import { Theme, Fab, Grid } from '@material-ui/core'
 import { Add } from '@material-ui/icons'
 import { makeStyles, createStyles } from '@material-ui/core/styles'
 import Masonry from 'react-masonry-css'
+import { useState } from 'react'
 import NoteCard from './NoteCard'
 import Note from '../Models/Note'
+import EditNoteModal from './EditNoteModal'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -13,7 +15,7 @@ const useStyles = makeStyles((theme: Theme) =>
       right: theme.spacing(4),
     },
     noteContainer: {
-      margin: theme.spacing(4),
+      padding: theme.spacing(4),
     },
     masonryGridCol: {
       paddingLeft: '30px' /* gutter size */,
@@ -30,9 +32,25 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const notes: Note[] = []
+const notes: Note[] = [
+  {
+    Content: 'test',
+    Created: new Date(),
+    Id: 'test',
+    Title: 'test',
+  },
+]
+
+type noteState = {
+  open: boolean
+  note: Note | undefined
+}
 
 const NotePage = () => {
+  const [editNoteState, setEditNoteState] = useState<noteState>({
+    open: false,
+    note: undefined,
+  })
   const classes = useStyles()
 
   const breakpoints = {
@@ -44,7 +62,6 @@ const NotePage = () => {
     780: 1,
   }
   return (
-    <>
       <div className={classes.noteContainer}>
         <Masonry
           breakpointCols={breakpoints}
@@ -53,7 +70,10 @@ const NotePage = () => {
         >
           {notes.map((note) => (
             <div className={classes.masonryItem}>
-              <NoteCard note={note} />
+                <NoteCard
+                  note={note}
+                  onClick={() => setEditNoteState({ open: true, note })}
+                />
             </div>
           ))}
         </Masonry>
@@ -61,7 +81,13 @@ const NotePage = () => {
       <Fab color="primary" aria-label="add" className={classes.addButton}>
         <Add />
       </Fab>
-    </>
+      <EditNoteModal
+        open={editNoteState.open}
+        onClose={() => setEditNoteState({ ...editNoteState, open: false })}
+        onChange={(note) => setEditNoteState({ ...editNoteState, note })}
+        note={editNoteState.note}
+      />
+    </div>
   )
 }
 
