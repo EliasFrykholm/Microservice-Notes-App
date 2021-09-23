@@ -1,4 +1,4 @@
-import { Theme, Fab, Grid } from '@material-ui/core'
+import { Theme, Fab, Grid, Box } from '@material-ui/core'
 import { Add } from '@material-ui/icons'
 import { makeStyles, createStyles } from '@material-ui/core/styles'
 import Masonry from 'react-masonry-css'
@@ -6,6 +6,7 @@ import { useState } from 'react'
 import NoteCard from './NoteCard'
 import Note from '../Models/Note'
 import EditNoteModal from './EditNoteModal'
+import CreateNoteCard from './CreateNoteCard'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -62,22 +63,28 @@ const NotePage = () => {
     780: 1,
   }
   return (
-      <div className={classes.noteContainer}>
-        <Masonry
-          breakpointCols={breakpoints}
-          className={classes.masonryGrid}
-          columnClassName={classes.masonryGridCol}
-        >
-          {notes.map((note) => (
-            <div className={classes.masonryItem}>
+    <div className={classes.noteContainer}>
+      <Grid container spacing={3} direction="column">
+        <Grid item xs container justifyContent="center">
+          <CreateNoteCard />
+        </Grid>
+        <Grid item xs>
+          <Masonry
+            breakpointCols={breakpoints}
+            className={classes.masonryGrid}
+            columnClassName={classes.masonryGridCol}
+          >
+            {notes.map((note) => (
+              <div className={classes.masonryItem}>
                 <NoteCard
                   note={note}
                   onClick={() => setEditNoteState({ open: true, note })}
                 />
-            </div>
-          ))}
-        </Masonry>
-      </div>
+              </div>
+            ))}
+          </Masonry>
+        </Grid>
+      </Grid>
       <Fab color="primary" aria-label="add" className={classes.addButton}>
         <Add />
       </Fab>

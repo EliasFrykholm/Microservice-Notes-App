@@ -1,7 +1,7 @@
 type Note = {
   Id: string
   Title: string
-  Content: string
+  Content: string | string[]
   Created: Date
 }
 
