@@ -8,7 +8,7 @@ import {
   TextField,
 } from '@material-ui/core'
 import { Palette } from '@material-ui/icons'
-import NoteDescription from '../../Models/NoteDescription'
+import NoteDescription, { ListNoteContent } from '../../Models/NoteDescription'
 import NoteType from '../../Models/NoteType'
 import ListNoteContentInput from './ListNoteContentInput'
 import TextNoteContentInput from './TextNoteContentInput'
@@ -61,7 +61,7 @@ const NoteInput = ({
       case NoteType.List:
         return (
           <ListNoteContentInput
-            items={note.Content as string[]}
+            items={note.Content as ListNoteContent[]}
             onChange={(value) => onChange({ ...note, Content: value })}
             maxHeight={maxNoteHeight}
           />

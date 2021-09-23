@@ -7,6 +7,7 @@ import NoteCard from './NoteCard'
 import Note from '../Models/Note'
 import EditNoteModal from './EditNoteModal'
 import CreateNoteCard from './CreateNoteCard'
+import NoteType from '../Models/NoteType'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -44,6 +45,7 @@ const notes: Note[] = [
     Created: new Date(),
     Id: 'test',
     Title: 'test',
+    Type: NoteType.Note,
   },
 ]
 

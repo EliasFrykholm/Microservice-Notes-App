@@ -14,10 +14,11 @@ import {
 import { Add, Delete } from '@material-ui/icons'
 import { BaseCSSProperties } from '@material-ui/styles'
 import { useRef } from 'react'
+import { ListNoteContent } from '../../Models/NoteDescription'
 
 type ListNoteContentInputProps = {
-  items: string[]
-  onChange: (items: string[]) => void
+  items: ListNoteContent[]
+  onChange: (items: ListNoteContent[]) => void
   maxHeight: string | undefined
 }
 
@@ -39,7 +40,7 @@ const ListNoteContentInput = ({
 
   const listInputRefs = useRef<any[]>([])
 
-  const handleListNoteItemChange = (value: string, index: number) => {
+  const handleListNoteItemChange = (value: ListNoteContent, index: number) => {
     const newItems = [...items]
     newItems[index] = value
     onChange(newItems)
@@ -52,7 +53,7 @@ const ListNoteContentInput = ({
   }
 
   const addListItem = () => {
-    const newItems = [...items, '']
+    const newItems = [...items, {}]
     onChange(newItems)
   }
 
@@ -72,16 +73,26 @@ const ListNoteContentInput = ({
 
   return (
     <List className={classes.NoteContent}>
-      {items.map((value, index) => (
+      {items.map((item, index) => (
         <ListItem>
           <ListItemIcon>
-            <Checkbox />
+            <Checkbox
+              value={item.checked}
+              onChange={(e) =>
+                handleListNoteItemChange(
+                  { ...item, checked: e.target.checked },
+                  index,
+                )
+              }
+            />
           </ListItemIcon>
           <TextField
             fullWidth
             label="Todo item"
-            value={value}
-            onChange={(e) => handleListNoteItemChange(e.target.value, index)}
+            value={item.name}
+            onChange={(e) =>
+              handleListNoteItemChange({ ...item, name: e.target.value }, index)
+            }
             onKeyDown={(e) => handleListKeyPress(e, index)}
             inputRef={(ref) => {
               listInputRefs.current[index] = ref

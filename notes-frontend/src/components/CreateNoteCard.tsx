@@ -12,6 +12,7 @@ import { useRef, useState } from 'react'
 import NoteType from '../Models/NoteType'
 import useOutsideClick from '../hooks/useOutsideClick'
 import NoteInput from './inputs/NoteInput'
+import { ListNoteContent } from '../Models/NoteDescription'
 
 type CreateNoteCardProps = {
   onSubmit: (content: string | string[], title?: string) => void
@@ -36,12 +37,12 @@ const useStyles = makeStyles((theme: Theme) =>
 
 type FormState = {
   Title?: string
-  Content?: string | string[]
+  Content?: string | ListNoteContent[]
   active?: NoteType
 }
 
-const isInputOk = (title?: string, content?: string | string[]) => {
-  if (content && Array.isArray(content) && content.some((e) => e)) {
+const isInputOk = (title?: string, content?: string | ListNoteContent[]) => {
+  if (content && Array.isArray(content) && content.some((e) => e.name)) {
     return true
   }
   if (title) {
@@ -53,10 +54,10 @@ const isInputOk = (title?: string, content?: string | string[]) => {
   return false
 }
 
-const getDefaultContent = (type: NoteType): string | string[] => {
+const getDefaultContent = (type: NoteType): string | ListNoteContent[] => {
   switch (type) {
     case NoteType.List:
-      return ['']
+      return [{}]
     case NoteType.Note:
       return ''
     default:

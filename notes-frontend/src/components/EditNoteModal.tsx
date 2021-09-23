@@ -48,7 +48,7 @@ const EditNoteModal = ({
         <NoteInput
           note={note}
           onChange={(value) => onChange({ ...note, ...value })}
-          type={NoteType.Note}
+          type={note.Type}
           onAbort={onClose}
           minNoteRows={15}
         />
