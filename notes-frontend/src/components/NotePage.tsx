@@ -90,9 +90,6 @@ const NotePage = () => {
           </Masonry>
         </Grid>
       </Grid>
-      <Fab color="primary" aria-label="add" className={classes.addButton}>
-        <Add />
-      </Fab>
       <EditNoteModal
         open={editNoteState.open}
         onClose={() => setEditNoteState({ ...editNoteState, open: false })}
