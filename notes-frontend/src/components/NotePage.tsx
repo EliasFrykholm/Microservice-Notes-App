@@ -1,9 +1,8 @@
-import { Theme, Fab, Grid } from '@material-ui/core'
-import { Add } from '@material-ui/icons'
+import { Theme, Grid } from '@material-ui/core'
 import { makeStyles, createStyles } from '@material-ui/core/styles'
 import Masonry from 'react-masonry-css'
 import { useState } from 'react'
-import NoteCard from './NoteCard'
+import NoteSummaryCard from './NoteSummaryCard'
 import Note from '../Models/Note'
 import EditNoteModal from './EditNoteModal'
 import CreateNoteCard from './CreateNoteCard'
@@ -83,7 +82,7 @@ const NotePage = () => {
           >
             {notes.map((note) => (
               <div className={classes.masonryItem}>
-                <NoteCard
+                <NoteSummaryCard
                   note={note}
                   onClick={() => setEditNoteState({ open: true, note })}
                 />

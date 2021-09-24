@@ -1,17 +1,12 @@
 import {
   Dialog,
-  DialogContent,
-  DialogTitle,
-  TextField,
   Theme,
   Typography,
   makeStyles,
   createStyles,
-  DialogActions,
 } from '@material-ui/core'
 import Note from '../Models/Note'
 import NoteInput from './inputs/NoteInput'
-import NoteType from '../Models/NoteType'
 
 type EditNoteModalProps = {
   open: boolean
@@ -42,7 +37,10 @@ const EditNoteModal = ({
       scroll="paper"
       maxWidth="md"
       fullWidth
-      PaperProps={{ className: classes.container }}
+      PaperProps={{
+        className: classes.container,
+        style: { background: note?.Color },
+      }}
     >
       {note ? (
         <NoteInput

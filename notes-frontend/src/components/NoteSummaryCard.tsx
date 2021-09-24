@@ -11,7 +11,7 @@ import { MoreVert } from '@material-ui/icons'
 import { createStyles, makeStyles } from '@material-ui/styles'
 import Note from '../Models/Note'
 
-type NoteCardProps = {
+type NoteSummaryCardProps = {
   note: Note
   onClick: () => void
 }
@@ -34,10 +34,14 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const NoteCard = ({ note, onClick }: NoteCardProps) => {
+const NoteSummaryCard = ({ note, onClick }: NoteSummaryCardProps) => {
   const classes = useStyles()
   return (
-    <Card className={classes.card} elevation={3}>
+    <Card
+      className={classes.card}
+      style={{ background: note.Color }}
+      elevation={3}
+    >
       <CardActionArea onClick={onClick}>
         <CardHeader
           classes={{ root: classes.cardHeader, content: classes.cardHeader }}
@@ -61,4 +65,4 @@ const NoteCard = ({ note, onClick }: NoteCardProps) => {
   )
 }
 
-export default NoteCard
+export default NoteSummaryCard

@@ -8,10 +8,12 @@ import {
   TextField,
 } from '@material-ui/core'
 import { Palette } from '@material-ui/icons'
+import { useState, useRef } from 'react'
 import NoteDescription, { ListNoteContent } from '../../Models/NoteDescription'
 import NoteType from '../../Models/NoteType'
 import ListNoteContentInput from './ListNoteContentInput'
 import TextNoteContentInput from './TextNoteContentInput'
+import ColorPicker from '../ColorPicker'
 
 interface NoteInputProps {
   note: NoteDescription
@@ -46,6 +48,10 @@ const NoteInput = ({
   minNoteRows,
 }: NoteInputProps) => {
   const classes = useStyles()
+
+  const [colorPickerOpen, setColorPickerOpen] = useState(false)
+
+  const colorRef = useRef(null)
 
   const renderContentInput = (): JSX.Element | undefined => {
     switch (type) {
@@ -93,9 +99,16 @@ const NoteInput = ({
       <Grid item>{renderContentInput()}</Grid>
       <Grid item container direction="row">
         <Grid item>
-          <IconButton>
+          <IconButton ref={colorRef} onClick={() => setColorPickerOpen(true)}>
             <Palette />
           </IconButton>
+          <ColorPicker
+            anchor={colorRef}
+            onChange={(value) => onChange({ ...note, Color: value })}
+            onClose={() => setColorPickerOpen(false)}
+            open={colorPickerOpen}
+            color={note.Color}
+          />
         </Grid>
         <Grid item xs />
         {onAbort && (

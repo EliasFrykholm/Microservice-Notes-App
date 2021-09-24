@@ -1,18 +1,18 @@
 import {
+  makeStyles,
+  Theme,
+  createStyles,
+  ClickAwayListener,
   Card,
   Grid,
   Typography,
   IconButton,
-  makeStyles,
-  createStyles,
-  Theme,
 } from '@material-ui/core'
 import { CheckBox } from '@material-ui/icons'
 import { useRef, useState } from 'react'
-import NoteType from '../Models/NoteType'
-import useOutsideClick from '../hooks/useOutsideClick'
-import NoteInput from './inputs/NoteInput'
 import { ListNoteContent } from '../Models/NoteDescription'
+import NoteType from '../Models/NoteType'
+import NoteInput from './inputs/NoteInput'
 
 type CreateNoteCardProps = {
   onSubmit: (content: string | string[], title?: string) => void
@@ -38,6 +38,7 @@ const useStyles = makeStyles((theme: Theme) =>
 type FormState = {
   Title?: string
   Content?: string | ListNoteContent[]
+  Color?: string
   active?: NoteType
 }
 
@@ -88,54 +89,52 @@ const CreateNoteCard = ({ onSubmit }: CreateNoteCardProps) => {
     setFormState(getDefaultState())
   }
 
-  useOutsideClick(
-    wrapperRef,
-    () => formState.active !== undefined && handleSubmit(),
-  )
-
   const handleListTypeChange = (type: NoteType | undefined) =>
     formState.active !== type && setFormState(getDefaultState(type))
 
   return (
-    <Card
-      className={classes.CreateNoteCard}
-      elevation={3}
-      onClick={() =>
-        formState.active === undefined && handleListTypeChange(NoteType.Note)
-      }
-      ref={wrapperRef}
-    >
-      {formState.active !== undefined &&
-      formState.Content !== undefined &&
-      formState.Title !== undefined ? (
-        <NoteInput
-          note={{ Content: formState.Content, Title: formState.Title }}
-          onChange={(note) => setFormState({ ...formState, ...note })}
-          onAbort={() => handleListTypeChange(undefined)}
-          type={formState.active}
-          maxListRows={15}
-          maxNoteHeight="500px"
-        />
-      ) : (
-        <Grid container spacing={2} direction="column">
-          <Grid item container spacing={2} alignItems="center">
-            <Grid item xs>
-              <Typography variant="body1">Create note ...</Typography>
-            </Grid>
-            <Grid item>
-              <IconButton
-                onClick={(e) => {
-                  e.stopPropagation()
-                  handleListTypeChange(NoteType.List)
-                }}
-              >
-                <CheckBox />
-              </IconButton>
+    <ClickAwayListener onClickAway={handleSubmit}>
+      <Card
+        className={classes.CreateNoteCard}
+        elevation={3}
+        onClick={() =>
+          formState.active === undefined && handleListTypeChange(NoteType.Note)
+        }
+        ref={wrapperRef}
+        style={{ background: formState.Color }}
+      >
+        {formState.active !== undefined &&
+        formState.Content !== undefined &&
+        formState.Title !== undefined ? (
+          <NoteInput
+            note={{ Content: formState.Content, Title: formState.Title }}
+            onChange={(note) => setFormState({ ...formState, ...note })}
+            onAbort={() => handleListTypeChange(undefined)}
+            type={formState.active}
+            maxListRows={15}
+            maxNoteHeight="500px"
+          />
+        ) : (
+          <Grid container spacing={2} direction="column">
+            <Grid item container spacing={2} alignItems="center">
+              <Grid item xs>
+                <Typography variant="body1">Create note ...</Typography>
+              </Grid>
+              <Grid item>
+                <IconButton
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleListTypeChange(NoteType.List)
+                  }}
+                >
+                  <CheckBox />
+                </IconButton>
+              </Grid>
             </Grid>
           </Grid>
-        </Grid>
-      )}
-    </Card>
+        )}
+      </Card>
+    </ClickAwayListener>
   )
 }
 
