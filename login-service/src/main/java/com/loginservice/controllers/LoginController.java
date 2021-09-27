@@ -34,7 +34,7 @@ public class LoginController {
 
     @PostMapping(value = "/login")
     @CrossOrigin(origins = "http://localhost:3000")
-    public ResponseEntity<LoginResponseDto> getMethodName(@RequestBody LoginRequestDto request, HttpServletResponse response)
+    public ResponseEntity<LoginResponseDto> getMethodName(@RequestBody LoginRequestDto request)
             throws UnsupportedEncodingException {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.username, request.password));
@@ -42,13 +42,9 @@ public class LoginController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
 
-        Cookie cookie = new Cookie("token", jwt);
-        cookie.setHttpOnly(true);
-        response.addCookie(cookie);
-
         MyUserDetails userDetails = (MyUserDetails) authentication.getPrincipal();
 
-        return ResponseEntity.ok(new LoginResponseDto(userDetails.getId(), userDetails.getUsername()));
+        return ResponseEntity.ok(new LoginResponseDto(jwt, userDetails.getId(), userDetails.getUsername()));
     }
 
     @PostMapping(value = "/signup")

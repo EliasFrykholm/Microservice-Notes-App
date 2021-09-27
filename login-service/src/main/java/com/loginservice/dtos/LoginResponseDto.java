@@ -1,11 +1,13 @@
 package com.loginservice.dtos;
 
 public class LoginResponseDto {
-    private String id;
-    private String username;
+    private final String token;
+    private final String id;
+    private final String username;
 
 
-    public LoginResponseDto(String id, String username) {
+    public LoginResponseDto(String token, String id, String username) {
+        this.token = token;
         this.id = id;
         this.username = username;
     }
@@ -14,16 +16,11 @@ public class LoginResponseDto {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public String getUsername() {
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public String getToken() {
+        return token;
     }
-
 }

@@ -58,8 +58,8 @@ const NotePage = ({ user }: NotePageProps) => {
 
   useEffect(() => {
     if (user)
-      fetchNotes()
-        .then((response) => response && setNotes(response))
+      fetchNotes(user.token)
+        .then((response) => response.notes && setNotes(response.notes))
         .catch((e) => console.log(e))
   }, [user])
 

@@ -10,6 +10,7 @@ export type UserCredentials = {
 }
 
 export type LoggedInUser = {
+  token: string
   id: string
   username: string
 }
