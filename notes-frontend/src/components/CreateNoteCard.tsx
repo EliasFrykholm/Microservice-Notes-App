@@ -10,12 +10,12 @@ import {
 } from '@material-ui/core'
 import { CheckBox } from '@material-ui/icons'
 import { useRef, useState } from 'react'
-import { ListNoteContent } from '../Models/NoteDescription'
+import NoteDescription, { ListNoteContent } from '../Models/NoteDescription'
 import NoteType from '../Models/NoteType'
 import NoteInput from './inputs/NoteInput'
 
 type CreateNoteCardProps = {
-  onSubmit: (content: string | string[], title?: string) => void
+  onSubmit: (note: NoteDescription) => void
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -36,9 +36,9 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 type FormState = {
-  Title?: string
-  Content?: string | ListNoteContent[]
-  Color?: string
+  title?: string
+  content?: string | ListNoteContent[]
+  color?: string
   active?: NoteType
 }
 
@@ -69,8 +69,8 @@ const getDefaultContent = (type: NoteType): string | ListNoteContent[] => {
 const getDefaultState = (type?: NoteType): FormState => {
   if (type !== undefined)
     return {
-      Title: '',
-      Content: getDefaultContent(type),
+      title: '',
+      content: getDefaultContent(type),
       active: type,
     }
   return {}
@@ -83,8 +83,8 @@ const CreateNoteCard = ({ onSubmit }: CreateNoteCardProps) => {
   const wrapperRef = useRef(null)
 
   const handleSubmit = () => {
-    if (isInputOk(formState.Title, formState.Content)) {
-      onSubmit(formState.Content as string | string[], formState.Title)
+    if (isInputOk(formState.title, formState.content)) {
+      onSubmit(formState as NoteDescription)
     }
     setFormState(getDefaultState())
   }
@@ -101,13 +101,13 @@ const CreateNoteCard = ({ onSubmit }: CreateNoteCardProps) => {
           formState.active === undefined && handleListTypeChange(NoteType.Note)
         }
         ref={wrapperRef}
-        style={{ background: formState.Color }}
+        style={{ background: formState.color }}
       >
         {formState.active !== undefined &&
-        formState.Content !== undefined &&
-        formState.Title !== undefined ? (
+        formState.content !== undefined &&
+        formState.title !== undefined ? (
           <NoteInput
-            note={{ Content: formState.Content, Title: formState.Title }}
+            note={{ content: formState.content, title: formState.title }}
             onChange={(note) => setFormState({ ...formState, ...note })}
             onAbort={() => handleListTypeChange(undefined)}
             type={formState.active}

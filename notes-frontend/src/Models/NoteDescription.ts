@@ -4,9 +4,9 @@ export type ListNoteContent = {
 }
 
 interface NoteDescription {
-  Title: string
-  Content: string | ListNoteContent[]
-  Color?: string
+  title: string
+  content: string | ListNoteContent[]
+  color?: string
 }
 
 export default NoteDescription

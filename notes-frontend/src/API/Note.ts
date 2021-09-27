@@ -1,4 +1,5 @@
 import Note from '../Models/Note'
+import NoteDescription from '../Models/NoteDescription'
 import NoteType from '../Models/NoteType'
 import { NOTES_ENDPOINT, NOTE_ENDPOINT } from './Endpoints'
 
@@ -13,7 +14,7 @@ export const fetchNotes = async (
   return response.json() // parses JSON response into native JavaScript objects
 }
 
-export const createNote = async (token: string, data: Note) => {
+export const createNote = async (token: string, data: NoteDescription) => {
   const response = await fetch(NOTE_ENDPOINT, {
     method: 'POST',
     // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached

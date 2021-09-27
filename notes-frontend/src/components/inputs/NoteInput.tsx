@@ -58,8 +58,8 @@ const NoteInput = ({
       case NoteType.Note:
         return (
           <TextNoteContentInput
-            value={note.Content as string}
-            onChange={(value) => onChange({ ...note, Content: value })}
+            value={note.content as string}
+            onChange={(value) => onChange({ ...note, content: value })}
             maxRows={maxListRows}
             minRows={minNoteRows}
           />
@@ -67,8 +67,8 @@ const NoteInput = ({
       case NoteType.List:
         return (
           <ListNoteContentInput
-            items={note.Content as ListNoteContent[]}
-            onChange={(value) => onChange({ ...note, Content: value })}
+            items={note.content as ListNoteContent[]}
+            onChange={(value) => onChange({ ...note, content: value })}
             maxHeight={maxNoteHeight}
           />
         )
@@ -92,8 +92,8 @@ const NoteInput = ({
             className: classes.TitleInput,
           }}
           label="Title"
-          value={note.Title}
-          onChange={(e) => onChange({ ...note, Title: e.target.value })}
+          value={note.title}
+          onChange={(e) => onChange({ ...note, title: e.target.value })}
         />
       </Grid>
       <Grid item>{renderContentInput()}</Grid>
@@ -104,10 +104,10 @@ const NoteInput = ({
           </IconButton>
           <ColorPicker
             anchor={colorRef}
-            onChange={(value) => onChange({ ...note, Color: value })}
+            onChange={(value) => onChange({ ...note, color: value })}
             onClose={() => setColorPickerOpen(false)}
             open={colorPickerOpen}
-            color={note.Color}
+            color={note.color}
           />
         </Grid>
         <Grid item xs />
@@ -126,7 +126,7 @@ const NoteInput = ({
           <Grid item>
             <Button
               onClick={() => {
-                onSave({ Title: note.Title, Content: note.Content })
+                onSave({ title: note.title, content: note.content })
               }}
             >
               Save

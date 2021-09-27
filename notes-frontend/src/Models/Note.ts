@@ -2,10 +2,9 @@ import NoteDescription from './NoteDescription'
 import NoteType from './NoteType'
 
 interface Note extends NoteDescription {
-  Id: string
-  Created: Date
-  Type: NoteType
-  Color?: string
+  id: string
+  created: string
+  type: NoteType
 }
 
 export default Note

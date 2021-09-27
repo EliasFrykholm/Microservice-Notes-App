@@ -6,8 +6,9 @@ import NoteSummaryCard from './NoteSummaryCard'
 import Note from '../Models/Note'
 import EditNoteModal from './EditNoteModal'
 import CreateNoteCard from './CreateNoteCard'
-import { fetchNotes } from '../API/Note'
+import { createNote, fetchNotes } from '../API/Note'
 import { LoggedInUser } from '../Models/User'
+import NoteDescription from '../Models/NoteDescription'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -43,11 +44,6 @@ type noteState = {
   note: Note | undefined
 }
 
-const onAddNote = (content: string | string[], title?: string) => {
-  console.log(title)
-  console.log(content)
-}
-
 const NotePage = ({ user }: NotePageProps) => {
   const [editNoteState, setEditNoteState] = useState<noteState>({
     open: false,
@@ -59,9 +55,15 @@ const NotePage = ({ user }: NotePageProps) => {
   useEffect(() => {
     if (user)
       fetchNotes(user.token)
-        .then((response) => response.notes && setNotes(response.notes))
+        .then((data) => {
+          setNotes(data)
+        })
         .catch((e) => console.log(e))
   }, [user])
+
+  const onAddNote = (note: NoteDescription) => {
+    if (user) createNote(user?.token, note)
+  }
 
   const breakpoints = {
     default: 6,

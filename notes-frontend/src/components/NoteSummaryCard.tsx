@@ -39,7 +39,7 @@ const NoteSummaryCard = ({ note, onClick }: NoteSummaryCardProps) => {
   return (
     <Card
       className={classes.card}
-      style={{ background: note.Color }}
+      style={{ background: note.color }}
       elevation={3}
     >
       <CardActionArea onClick={onClick}>
@@ -50,14 +50,14 @@ const NoteSummaryCard = ({ note, onClick }: NoteSummaryCardProps) => {
               <MoreVert />
             </IconButton>
           }
-          title={note.Title}
-          subheader={note.Created.toLocaleString()}
+          title={note.title}
+          subheader={new Date(note.created).toLocaleString()}
           subheaderTypographyProps={{ variant: 'caption' }}
           titleTypographyProps={{ variant: 'subtitle1', noWrap: true }}
         />
         <CardContent className={classes.cardContent}>
           <Typography className={classes.cardContent} variant="body2">
-            {note.Content}
+            {note.content}
           </Typography>
         </CardContent>
       </CardActionArea>

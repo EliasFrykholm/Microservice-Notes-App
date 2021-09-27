@@ -39,14 +39,14 @@ const EditNoteModal = ({
       fullWidth
       PaperProps={{
         className: classes.container,
-        style: { background: note?.Color },
+        style: { background: note?.color },
       }}
     >
       {note ? (
         <NoteInput
           note={note}
           onChange={(value) => onChange({ ...note, ...value })}
-          type={note.Type}
+          type={note.type}
           onAbort={onClose}
           minNoteRows={15}
         />
