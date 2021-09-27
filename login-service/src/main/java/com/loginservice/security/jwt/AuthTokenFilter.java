@@ -2,6 +2,7 @@ package com.loginservice.security.jwt;
 
 import com.loginservice.security.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,9 +12,11 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class AuthTokenFilter extends OncePerRequestFilter {
     @Autowired
@@ -45,12 +48,17 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     }
 
     private String parseJwt(HttpServletRequest request) {
-        String headerAuth = request.getHeader("Authorization");
+        Cookie[] cookies = request.getCookies();
 
-        if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
-            return headerAuth.substring(7, headerAuth.length());
+        if( cookies == null || cookies.length < 1 ) {
+            return null;
         }
 
+        for( Cookie cookie : cookies ) {
+            if( ( "token" ).equals( cookie.getName() ) ) {
+                return cookie.getValue();
+            }
+        }
         return null;
     }
 }

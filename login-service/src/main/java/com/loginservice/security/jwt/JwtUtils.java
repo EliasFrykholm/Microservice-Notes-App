@@ -26,7 +26,6 @@ public class JwtUtils {
     public String generateJwtToken(Authentication authentication) throws UnsupportedEncodingException {
 
         MyUserDetails userPrincipal = (MyUserDetails) authentication.getPrincipal();
-        System.out.println(jwtSecret);
         return Jwts.builder()
                 .setSubject((userPrincipal.getUsername()))
                 .setId(userPrincipal.getId())
@@ -36,13 +35,13 @@ public class JwtUtils {
                 .compact();
     }
 
-    public String getUserNameFromJwtToken(String token) {
-        return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
+    public String getUserNameFromJwtToken(String token) throws UnsupportedEncodingException {
+        return Jwts.parser().setSigningKey(jwtSecret.getBytes("UTF-8")).parseClaimsJws(token).getBody().getSubject();
     }
 
-    public boolean validateJwtToken(String authToken) {
+    public boolean validateJwtToken(String authToken) throws UnsupportedEncodingException {
         try {
-            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
+            Jwts.parser().setSigningKey(jwtSecret.getBytes("UTF-8")).parseClaimsJws(authToken);
             return true;
         } catch (SignatureException e) {
             System.out.println("Invalid JWT signature: {}" + e.getMessage());

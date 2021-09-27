@@ -3,7 +3,6 @@ package utils
 import (
 	"fmt"
 	"net/http"
-	"strings"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/spf13/viper"
@@ -16,10 +15,11 @@ func NewJwtHandler() *JwtHandler {
 }
 
 func (JwtHandler) ExtractToken(r *http.Request) string {
-	bearToken := r.Header.Get("Authorization")
-	strArr := strings.Split(bearToken, " ")
-	if len(strArr) == 2 {
-		return strArr[1]
+	cookies := r.Cookies()
+	for _, v := range cookies {
+		if v.Name == "token" {
+			return v.Value
+		}
 	}
 	return ""
 }
