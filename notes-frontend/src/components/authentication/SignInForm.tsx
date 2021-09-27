@@ -1,6 +1,6 @@
 import { Button, Grid, TextField, Typography } from '@material-ui/core'
 import { useState } from 'react'
-import UserCredentials from '../../Models/UserCredentials'
+import { UserCredentials } from '../../Models/User'
 
 type SignInFormProps = {
   onSignIn: (credentials: UserCredentials) => void

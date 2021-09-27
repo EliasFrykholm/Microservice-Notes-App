@@ -8,10 +8,10 @@ import { request } from 'http'
 import { useState } from 'react'
 import { LOGIN_ENDPOINT } from '../../API/Endpoints'
 import Login from '../../hooks/Login'
-import UserCredentials from '../../Models/UserCredentials'
+import { LoggedInUser, UserCredentials, UserInfo } from '../../Models/User'
 import SignInForm from './SignInForm'
 import SignUpForm from './SignUpForm'
-import LoggedInUser from '../../Models/LoggedInUser'
+import SignUp from '../../hooks/SignUp'
 
 type AuthDialogProps = {
   open: boolean
@@ -28,7 +28,20 @@ const AuthDialog = ({ open, onSignIn }: AuthDialogProps) => {
 
   const handleSignIn = (userCredentials: UserCredentials) => {
     Login(userCredentials)
-      .then((response: LoggedInUser) => onSignIn(response))
+      .then((response: LoggedInUser) => {
+        onSignIn(response)
+      })
+      .catch((e) => console.log(e))
+  }
+
+  const handleSignUp = (userInfo: UserInfo) => {
+    SignUp(userInfo)
+      .then(() =>
+        handleSignIn({
+          username: userInfo.username,
+          password: userInfo.password,
+        }),
+      )
       .catch((e) => console.log(e))
   }
 
@@ -42,7 +55,7 @@ const AuthDialog = ({ open, onSignIn }: AuthDialogProps) => {
           />
         ) : (
           <SignUpForm
-            onSignUp={() => undefined}
+            onSignUp={handleSignUp}
             onSignInClick={() => setInputType(InputType.signIn)}
           />
         )}

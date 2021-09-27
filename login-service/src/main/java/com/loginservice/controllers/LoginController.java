@@ -52,6 +52,7 @@ public class LoginController {
     }
 
     @PostMapping(value = "/signup")
+    @CrossOrigin(origins = "http://localhost:3000")
     public ResponseEntity<String> getMethodName(@RequestBody SignupRequestDto request) {
         try {
             signupService.signUp(request.fullName, request.username, request.password);
