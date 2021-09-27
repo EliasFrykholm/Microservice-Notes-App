@@ -14,6 +14,7 @@ import (
 	notemongo "github.com/EliasFrykholm/Microservices-keep-clone/notes-api-service/src/note/repository/mongo"
 	noteusecase "github.com/EliasFrykholm/Microservices-keep-clone/notes-api-service/src/note/usecase"
 	jwthandler "github.com/EliasFrykholm/Microservices-keep-clone/notes-api-service/src/utils"
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/spf13/viper"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -43,9 +44,13 @@ func (a *App) Run(port string) error {
 
 	notehttp.RegisterHTTPEndpoints(router, a.noteUC, jwtHandler)
 
+	origins := handlers.AllowedOrigins([]string{viper.GetString("CORS_ORIGIN")})
+	headers := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization", "Access-Control-Allow-Credentials", "Access-Control-Allow-Origin"})
+	methods := handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"})
+
 	a.httpServer = &http.Server{
 		Addr:           ":" + port,
-		Handler:        router,
+		Handler:        handlers.CORS(headers, origins, methods)(router),
 		ReadTimeout:    10 * time.Second,
 		WriteTimeout:   10 * time.Second,
 		MaxHeaderBytes: 1 << 20,

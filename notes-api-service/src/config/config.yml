@@ -2,6 +2,7 @@ port: 12345
 
 MONGO_URI: "mongodb://localhost:27017"
 LOGINSERVICE_APP_JWTSECRET: mysecret
+CORS_ORIGIN: "http://localhost:3000"
 
 mongo:
   name: "keepclone"
