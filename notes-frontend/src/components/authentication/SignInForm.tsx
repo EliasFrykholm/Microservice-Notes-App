@@ -1,17 +1,23 @@
 import { Button, Grid, TextField, Typography } from '@material-ui/core'
+import { useState } from 'react'
+import UserCredentials from '../../Models/UserCredentials'
 
 type SignInFormProps = {
-  onSignIn: () => void
+  onSignIn: (credentials: UserCredentials) => void
   onSignUpClick: () => void
 }
 
 const SignInForm = ({ onSignIn, onSignUpClick }: SignInFormProps) => {
+  const [signInState, setSignInState] = useState<UserCredentials>({
+    username: '',
+    password: '',
+  })
+
   return (
     <form
       onSubmit={(event) => {
         event.preventDefault()
-        console.log(event)
-        onSignIn()
+        onSignIn(signInState)
       }}
     >
       <Grid container spacing={3} direction="column">
@@ -25,10 +31,25 @@ const SignInForm = ({ onSignIn, onSignUpClick }: SignInFormProps) => {
           </Typography>
         </Grid>
         <Grid item xs>
-          <TextField label="Username" fullWidth />
+          <TextField
+            label="Username"
+            value={signInState.username}
+            onChange={(e) =>
+              setSignInState({ ...signInState, username: e.target.value })
+            }
+            fullWidth
+          />
         </Grid>
         <Grid item xs>
-          <TextField label="Password" type="password" fullWidth />
+          <TextField
+            label="Password"
+            type="password"
+            value={signInState.password}
+            onChange={(e) =>
+              setSignInState({ ...signInState, password: e.target.value })
+            }
+            fullWidth
+          />
         </Grid>
         <Grid item xs>
           <Button color="primary" type="submit" variant="contained" fullWidth>
