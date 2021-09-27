@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"time"
 
 	"github.com/EliasFrykholm/Microservices-keep-clone/notes-api-service/src/models"
 	"github.com/EliasFrykholm/Microservices-keep-clone/notes-api-service/src/note"
@@ -17,13 +18,9 @@ func NewNoteUseCase(noteRepo note.Repository) *NoteUseCase {
 	}
 }
 
-func (n NoteUseCase) CreateNote(ctx context.Context, user, title, content string) error {
-	note := &models.Note{
-		Owner:   user,
-		Title:   title,
-		Content: content,
-	}
-
+func (n NoteUseCase) CreateNote(ctx context.Context, user string, note *models.Note) error {
+	note.Created = time.Now().Format(time.RFC3339)
+	note.Owner = user
 	return n.noteRepo.CreateNote(ctx, note)
 }
 
@@ -35,12 +32,8 @@ func (n NoteUseCase) DeleteNote(ctx context.Context, user, id string) error {
 	return n.noteRepo.DeleteNote(ctx, user, id)
 }
 
-func (n NoteUseCase) UpdateNote(ctx context.Context, user, id, title, content string) error {
-	note := &models.Note{
-		Owner:   user,
-		Title:   title,
-		Content: content,
-	}
-
-	return n.noteRepo.UpdateNote(ctx, id, note)
+func (n NoteUseCase) UpdateNote(ctx context.Context, user string, note *models.Note) error {
+	note.Created = time.Now().Format(time.RFC3339)
+	note.Owner = user
+	return n.noteRepo.UpdateNote(ctx, note)
 }

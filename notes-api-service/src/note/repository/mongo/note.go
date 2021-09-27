@@ -9,13 +9,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-type Note struct {
-	ID      primitive.ObjectID `bson:"_id,omitempty"`
-	Owner   string             `bson:"owner"`
-	Title   string             `bson:"title"`
-	Content string             `bson:"content"`
-}
-
 type NoteRepository struct {
 	db *mongo.Collection
 }
@@ -27,9 +20,8 @@ func NewNoteRepository(db *mongo.Database, collection string) *NoteRepository {
 }
 
 func (r NoteRepository) CreateNote(ctx context.Context, note *models.Note) error {
-	model := toModel(note)
 
-	res, err := r.db.InsertOne(ctx, model)
+	res, err := r.db.InsertOne(ctx, note)
 	if err != nil {
 		return err
 	}
@@ -46,10 +38,10 @@ func (r NoteRepository) GetNotes(ctx context.Context, user string) ([]*models.No
 		return nil, err
 	}
 
-	out := make([]*Note, 0)
+	out := make([]*models.Note, 0)
 
 	for cur.Next(ctx) {
-		note := new(Note)
+		note := new(models.Note)
 		err := cur.Decode(note)
 		if err != nil {
 			return nil, err
@@ -61,7 +53,7 @@ func (r NoteRepository) GetNotes(ctx context.Context, user string) ([]*models.No
 		return nil, err
 	}
 
-	return toNotes(out), nil
+	return out, nil
 }
 
 func (r NoteRepository) DeleteNote(ctx context.Context, user, id string) error {
@@ -73,43 +65,14 @@ func (r NoteRepository) DeleteNote(ctx context.Context, user, id string) error {
 	return err
 }
 
-func (r NoteRepository) UpdateNote(ctx context.Context, id string, note *models.Note) error {
-	model := toModel(note)
-	objID, err := primitive.ObjectIDFromHex(id)
+func (r NoteRepository) UpdateNote(ctx context.Context, note *models.Note) error {
+	objID, err := primitive.ObjectIDFromHex(note.ID)
 	if err != nil {
 		return err
 	}
-	_, err = r.db.ReplaceOne(ctx, bson.M{"_id": objID, "owner": note.Owner}, model)
+	_, err = r.db.ReplaceOne(ctx, bson.M{"_id": objID, "owner": note.Owner}, note)
 	if err != nil {
 		return err
 	}
 	return nil
-}
-
-func toModel(n *models.Note) *Note {
-
-	return &Note{
-		Owner:   n.Owner,
-		Title:   n.Title,
-		Content: n.Content,
-	}
-}
-
-func toNote(n *Note) *models.Note {
-	return &models.Note{
-		ID:      n.ID.Hex(),
-		Owner:   n.Owner,
-		Title:   n.Title,
-		Content: n.Content,
-	}
-}
-
-func toNotes(notes []*Note) []*models.Note {
-	out := make([]*models.Note, len(notes))
-
-	for i, n := range notes {
-		out[i] = toNote(n)
-	}
-
-	return out
 }

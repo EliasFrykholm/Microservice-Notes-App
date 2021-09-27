@@ -10,5 +10,5 @@ type Repository interface {
 	CreateNote(ctx context.Context, note *models.Note) error
 	GetNotes(ctx context.Context, user string) ([]*models.Note, error)
 	DeleteNote(ctx context.Context, user, id string) error
-	UpdateNote(ctx context.Context, id string, note *models.Note) error
+	UpdateNote(ctx context.Context, note *models.Note) error
 }

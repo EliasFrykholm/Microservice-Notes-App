@@ -9,12 +9,6 @@ import (
 	"github.com/EliasFrykholm/Microservices-keep-clone/notes-api-service/src/utils"
 )
 
-type Note struct {
-	ID      string `json:"id"`
-	Title   string `json:"title"`
-	Content string `json:"content"`
-}
-
 type Handler struct {
 	useCase    note.UseCase
 	jwtHandler utils.JwtHandlerInterface
@@ -27,11 +21,6 @@ func NewHandler(useCase note.UseCase, jwtHandler utils.JwtHandlerInterface) *Han
 	}
 }
 
-type createInput struct {
-	Title   string `json:"title"`
-	Content string `json:"content"`
-}
-
 func (h *Handler) Create(response http.ResponseWriter, request *http.Request) {
 	tokenAuth, err := h.jwtHandler.ExtractTokenMetadata(request)
 	if err != nil {
@@ -40,14 +29,14 @@ func (h *Handler) Create(response http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	inp := new(createInput)
+	inp := new(models.Note)
 	if err := json.NewDecoder(request.Body).Decode(&inp); err != nil {
 		response.WriteHeader(http.StatusBadRequest)
 		response.Write([]byte(`{"message":` + err.Error() + `}`))
 		return
 	}
 
-	err = h.useCase.CreateNote(request.Context(), tokenAuth.UserId, inp.Title, inp.Content)
+	err = h.useCase.CreateNote(request.Context(), tokenAuth.UserId, inp)
 
 	if err != nil {
 		response.WriteHeader(http.StatusInternalServerError)
@@ -55,10 +44,6 @@ func (h *Handler) Create(response http.ResponseWriter, request *http.Request) {
 		return
 	}
 	response.WriteHeader(http.StatusOK)
-}
-
-type getResponse struct {
-	Notes []*Note `json:"notes"`
 }
 
 func (h *Handler) Get(response http.ResponseWriter, request *http.Request) {
@@ -77,7 +62,7 @@ func (h *Handler) Get(response http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	json.NewEncoder(response).Encode(getResponse{Notes: toNotes(notes)})
+	json.NewEncoder(response).Encode(notes)
 }
 
 type deleteInput struct {
@@ -108,12 +93,6 @@ func (h *Handler) Delete(response http.ResponseWriter, request *http.Request) {
 	response.WriteHeader(http.StatusOK)
 }
 
-type updateInput struct {
-	ID      string `json:"id"`
-	Title   string `json:"title"`
-	Content string `json:"content"`
-}
-
 func (h *Handler) Update(response http.ResponseWriter, request *http.Request) {
 	tokenAuth, err := h.jwtHandler.ExtractTokenMetadata(request)
 	if err != nil {
@@ -122,36 +101,18 @@ func (h *Handler) Update(response http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	inp := new(updateInput)
+	inp := new(models.Note)
 	if err := json.NewDecoder(request.Body).Decode(&inp); err != nil {
 		response.WriteHeader(http.StatusBadRequest)
 		response.Write([]byte(`{"message":` + err.Error() + `}`))
 		return
 	}
 
-	err = h.useCase.UpdateNote(request.Context(), tokenAuth.UserId, inp.ID, inp.Title, inp.Content)
+	err = h.useCase.UpdateNote(request.Context(), tokenAuth.UserId, inp)
 	if err != nil {
 		response.WriteHeader(http.StatusInternalServerError)
 		response.Write([]byte(`{"message":` + err.Error() + `}`))
 		return
 	}
 	response.WriteHeader(http.StatusOK)
-}
-
-func toNotes(notes []*models.Note) []*Note {
-	out := make([]*Note, len(notes))
-
-	for i, n := range notes {
-		out[i] = toNote(n)
-	}
-
-	return out
-}
-
-func toNote(n *models.Note) *Note {
-	return &Note{
-		ID:      n.ID,
-		Title:   n.Title,
-		Content: n.Content,
-	}
 }
