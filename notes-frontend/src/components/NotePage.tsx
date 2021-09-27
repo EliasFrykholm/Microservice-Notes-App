@@ -1,12 +1,13 @@
 import { Theme, Grid } from '@material-ui/core'
 import { makeStyles, createStyles } from '@material-ui/core/styles'
 import Masonry from 'react-masonry-css'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import NoteSummaryCard from './NoteSummaryCard'
 import Note from '../Models/Note'
 import EditNoteModal from './EditNoteModal'
 import CreateNoteCard from './CreateNoteCard'
-import NoteType from '../Models/NoteType'
+import { fetchNotes } from '../API/Note'
+import { LoggedInUser } from '../Models/User'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -33,32 +34,34 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const onAddNote = (content: string | string[], title?: string) => {
-  console.log(title)
-  console.log(content)
+type NotePageProps = {
+  user: LoggedInUser | undefined
 }
-
-const notes: Note[] = [
-  {
-    Content: 'test',
-    Created: new Date(),
-    Id: 'test',
-    Title: 'test',
-    Type: NoteType.Note,
-  },
-]
 
 type noteState = {
   open: boolean
   note: Note | undefined
 }
 
-const NotePage = () => {
+const onAddNote = (content: string | string[], title?: string) => {
+  console.log(title)
+  console.log(content)
+}
+
+const NotePage = ({ user }: NotePageProps) => {
   const [editNoteState, setEditNoteState] = useState<noteState>({
     open: false,
     note: undefined,
   })
+  const [notes, setNotes] = useState<Note[]>([])
   const classes = useStyles()
+
+  useEffect(() => {
+    if (user)
+      fetchNotes()
+        .then((response) => response && setNotes(response))
+        .catch((e) => console.log(e))
+  }, [user])
 
   const breakpoints = {
     default: 6,

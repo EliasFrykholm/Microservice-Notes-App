@@ -1,17 +1,9 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogActions,
-  responsiveFontSizes,
-} from '@material-ui/core'
-import { request } from 'http'
+import { Dialog, DialogContent, DialogActions } from '@material-ui/core'
 import { useState } from 'react'
-import { LOGIN_ENDPOINT } from '../../API/Endpoints'
-import Login from '../../hooks/Login'
+import { Login, SignUp } from '../../API/Auth'
 import { LoggedInUser, UserCredentials, UserInfo } from '../../Models/User'
 import SignInForm from './SignInForm'
 import SignUpForm from './SignUpForm'
-import SignUp from '../../hooks/SignUp'
 
 type AuthDialogProps = {
   open: boolean
