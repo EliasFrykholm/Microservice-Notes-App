@@ -54,7 +54,7 @@ public class LoginController {
     @PostMapping(value = "/signup")
     public ResponseEntity<String> getMethodName(@RequestBody SignupRequestDto request) {
         try {
-            signupService.signUp(request.username, request.password);
+            signupService.signUp(request.fullName, request.username, request.password);
             return ResponseEntity.ok().build();
         } catch (AlreadyBoundException e) {
             return ResponseEntity.badRequest().build();

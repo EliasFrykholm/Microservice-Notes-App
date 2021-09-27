@@ -15,11 +15,11 @@ public class SignupService {
     @Autowired
     UserRepository userRepository;
 
-    public void signUp(String username, String password) throws AlreadyBoundException {
+    public void signUp(String fullName, String username, String password) throws AlreadyBoundException {
         if (userRepository.existsByUsername(username)) {
             throw new AlreadyBoundException();
         }
-        User user = new User(username, encoder.encode(password));
+        User user = new User(fullName, username, encoder.encode(password));
 
         userRepository.save(user);
     }
