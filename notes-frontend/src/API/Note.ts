@@ -31,7 +31,7 @@ export const createNote = async (token: string, data: NoteDescription) => {
 
 export const deleteNote = async (token: string, id: string) => {
   const response = await fetch(NOTE_ENDPOINT, {
-    method: 'POST',
+    method: 'DELELTE',
     // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
     // credentials: 'same-origin', // include, *same-origin, omit
     headers: {
@@ -46,7 +46,7 @@ export const deleteNote = async (token: string, id: string) => {
 
 export const updateNote = async (token: string, data: Note) => {
   const response = await fetch(NOTE_ENDPOINT, {
-    method: 'POST',
+    method: 'PUT',
     // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
     // credentials: 'same-origin', // include, *same-origin, omit
     headers: {
