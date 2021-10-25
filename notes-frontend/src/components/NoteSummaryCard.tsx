@@ -7,13 +7,14 @@ import {
   Theme,
   CardActionArea,
 } from '@material-ui/core'
-import { MoreVert } from '@material-ui/icons'
+import { Delete } from '@material-ui/icons'
 import { createStyles, makeStyles } from '@material-ui/styles'
 import Note from '../Models/Note'
 
 type NoteSummaryCardProps = {
   note: Note
   onClick: () => void
+  onDelete: () => void
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -34,7 +35,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const NoteSummaryCard = ({ note, onClick }: NoteSummaryCardProps) => {
+const NoteSummaryCard = ({ note, onClick, onDelete }: NoteSummaryCardProps) => {
   const classes = useStyles()
   return (
     <Card
@@ -46,8 +47,14 @@ const NoteSummaryCard = ({ note, onClick }: NoteSummaryCardProps) => {
         <CardHeader
           classes={{ root: classes.cardHeader, content: classes.cardHeader }}
           action={
-            <IconButton aria-label="settings">
-              <MoreVert />
+            <IconButton
+              aria-label="settings"
+              onClick={(e) => {
+                e.stopPropagation()
+                onDelete()
+              }}
+            >
+              <Delete />
             </IconButton>
           }
           title={note.title}

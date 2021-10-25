@@ -6,7 +6,7 @@ import NoteSummaryCard from './NoteSummaryCard'
 import Note from '../Models/Note'
 import EditNoteModal from './EditNoteModal'
 import CreateNoteCard from './CreateNoteCard'
-import { createNote, fetchNotes, updateNote } from '../API/Note'
+import { createNote, deleteNote, fetchNotes, updateNote } from '../API/Note'
 import { LoggedInUser } from '../Models/User'
 import NoteDescription from '../Models/NoteDescription'
 
@@ -70,6 +70,17 @@ const NotePage = ({ user }: NotePageProps) => {
       )
   }
 
+  const onDeleteNote = (id: string, index: number) => {
+    if (user)
+      deleteNote(user.token, id).then((ok) => {
+        if (ok) {
+          const newNotes = notes.slice()
+          newNotes.splice(index, 1)
+          setNotes(newNotes)
+        }
+      })
+  }
+
   const onSaveEditedNote = () => {
     const note = editNoteState.note as Note
     if (user && note)
@@ -108,6 +119,7 @@ const NotePage = ({ user }: NotePageProps) => {
                 <NoteSummaryCard
                   note={note}
                   onClick={() => setEditNoteState({ open: true, note, index })}
+                  onDelete={() => onDeleteNote(note.id, index)}
                 />
               </div>
             ))}
