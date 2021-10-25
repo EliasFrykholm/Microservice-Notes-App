@@ -99,6 +99,10 @@ func (h *Handler) Delete(response http.ResponseWriter, request *http.Request) {
 	response.WriteHeader(http.StatusOK)
 }
 
+type updateResponse struct {
+	Created string `json:"created"`
+}
+
 func (h *Handler) Update(response http.ResponseWriter, request *http.Request) {
 	tokenAuth, err := h.jwtHandler.ExtractTokenMetadata(request)
 	if err != nil {
@@ -121,4 +125,5 @@ func (h *Handler) Update(response http.ResponseWriter, request *http.Request) {
 		return
 	}
 	response.WriteHeader(http.StatusOK)
+	json.NewEncoder(response).Encode(updateResponse{Created: inp.Created})
 }

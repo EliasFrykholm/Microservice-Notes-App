@@ -70,6 +70,7 @@ func (r NoteRepository) UpdateNote(ctx context.Context, note *models.Note) error
 	if err != nil {
 		return err
 	}
+	note.ID = ""
 	_, err = r.db.ReplaceOne(ctx, bson.M{"_id": objID, "owner": note.Owner}, note)
 	if err != nil {
 		return err
