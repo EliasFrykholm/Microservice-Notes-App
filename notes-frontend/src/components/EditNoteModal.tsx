@@ -10,9 +10,10 @@ import NoteInput from './inputs/NoteInput'
 
 type EditNoteModalProps = {
   open: boolean
-  onClose: () => void
+  onAbort: () => void
   onChange: (note: Note) => void
-  note: Note | undefined
+  onSave: () => void
+  note: Note
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -25,15 +26,17 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const EditNoteModal = ({
   open,
-  onClose,
+  onAbort,
+  onSave,
   onChange,
   note,
 }: EditNoteModalProps) => {
   const classes = useStyles()
+
   return (
     <Dialog
       open={open}
-      onClose={onClose}
+      onClose={onSave}
       scroll="paper"
       maxWidth="md"
       fullWidth
@@ -47,7 +50,7 @@ const EditNoteModal = ({
           note={note}
           onChange={(value) => onChange({ ...note, ...value })}
           type={note.type}
-          onAbort={onClose}
+          onAbort={onAbort}
           minNoteRows={15}
         />
       ) : (

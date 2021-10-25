@@ -6,7 +6,7 @@ import NoteSummaryCard from './NoteSummaryCard'
 import Note from '../Models/Note'
 import EditNoteModal from './EditNoteModal'
 import CreateNoteCard from './CreateNoteCard'
-import { createNote, fetchNotes } from '../API/Note'
+import { createNote, fetchNotes, updateNote } from '../API/Note'
 import { LoggedInUser } from '../Models/User'
 import NoteDescription from '../Models/NoteDescription'
 
@@ -42,12 +42,14 @@ type NotePageProps = {
 type noteState = {
   open: boolean
   note: Note | undefined
+  index: number
 }
 
 const NotePage = ({ user }: NotePageProps) => {
   const [editNoteState, setEditNoteState] = useState<noteState>({
     open: false,
     note: undefined,
+    index: -1,
   })
   const [notes, setNotes] = useState<Note[]>([])
   const classes = useStyles()
@@ -66,6 +68,19 @@ const NotePage = ({ user }: NotePageProps) => {
       createNote(user.token, note).then((data) =>
         setNotes([...notes, { ...note, ...data }]),
       )
+  }
+
+  const onSaveEditedNote = () => {
+    const note = editNoteState.note as Note
+    if (user && note)
+      updateNote(user.token, note).then((data) => {
+        if (data && editNoteState.note) {
+          const newNotes = notes.slice()
+          newNotes[editNoteState.index] = { ...note, ...data }
+          setNotes(newNotes)
+          setEditNoteState({ ...editNoteState, open: false })
+        }
+      })
   }
 
   const breakpoints = {
@@ -88,11 +103,11 @@ const NotePage = ({ user }: NotePageProps) => {
             className={classes.masonryGrid}
             columnClassName={classes.masonryGridCol}
           >
-            {notes.map((note) => (
+            {notes.map((note, index) => (
               <div className={classes.masonryItem}>
                 <NoteSummaryCard
                   note={note}
-                  onClick={() => setEditNoteState({ open: true, note })}
+                  onClick={() => setEditNoteState({ open: true, note, index })}
                 />
               </div>
             ))}
@@ -101,9 +116,10 @@ const NotePage = ({ user }: NotePageProps) => {
       </Grid>
       <EditNoteModal
         open={editNoteState.open}
-        onClose={() => setEditNoteState({ ...editNoteState, open: false })}
+        onAbort={() => setEditNoteState({ ...editNoteState, open: false })}
         onChange={(note) => setEditNoteState({ ...editNoteState, note })}
-        note={editNoteState.note}
+        onSave={onSaveEditedNote}
+        note={editNoteState.note as Note}
       />
     </div>
   )
