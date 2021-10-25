@@ -62,7 +62,10 @@ const NotePage = ({ user }: NotePageProps) => {
   }, [user])
 
   const onAddNote = (note: NoteDescription) => {
-    if (user) createNote(user?.token, note)
+    if (user)
+      createNote(user.token, note).then((data) =>
+        setNotes([...notes, { ...note, ...data }]),
+      )
   }
 
   const breakpoints = {

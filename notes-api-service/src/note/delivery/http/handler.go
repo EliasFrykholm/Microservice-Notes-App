@@ -21,6 +21,11 @@ func NewHandler(useCase note.UseCase, jwtHandler utils.JwtHandlerInterface) *Han
 	}
 }
 
+type createResponse struct {
+	Id      string `json:"id"`
+	Created string `json:"created"`
+}
+
 func (h *Handler) Create(response http.ResponseWriter, request *http.Request) {
 	tokenAuth, err := h.jwtHandler.ExtractTokenMetadata(request)
 	if err != nil {
@@ -44,6 +49,7 @@ func (h *Handler) Create(response http.ResponseWriter, request *http.Request) {
 		return
 	}
 	response.WriteHeader(http.StatusOK)
+	json.NewEncoder(response).Encode(createResponse{Id: inp.ID, Created: inp.Created})
 }
 
 func (h *Handler) Get(response http.ResponseWriter, request *http.Request) {
