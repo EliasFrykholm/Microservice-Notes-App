@@ -8,6 +8,12 @@ import {
 } from '@material-ui/core'
 import { Menu } from '@material-ui/icons'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
+import { LoggedInUser } from '../../Models/User'
+
+interface NavbarProps {
+  user: LoggedInUser | undefined
+  onLogout: () => void
+}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -20,7 +26,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const Navbar = () => {
+const Navbar = ({ user, onLogout }: NavbarProps) => {
   const classes = useStyles()
   return (
     <AppBar position="static">
@@ -36,7 +42,13 @@ const Navbar = () => {
         <Typography variant="h6" className={classes.title}>
           Notes
         </Typography>
-        <Button color="inherit">Login</Button>
+        {user ? (
+          <Button color="inherit" onClick={onLogout}>
+            Logout
+          </Button>
+        ) : (
+          <Button color="inherit">Login</Button>
+        )}
       </Toolbar>
     </AppBar>
   )

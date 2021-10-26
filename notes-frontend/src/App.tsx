@@ -9,7 +9,7 @@ function App() {
 
   return (
     <div>
-      <Navbar />
+      <Navbar user={user} onLogout={() => setUser(undefined)} />
       <NotePage user={user} />
       <AuthDialog open={!user} onSignIn={setUser} />
     </div>

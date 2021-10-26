@@ -129,24 +129,28 @@ const NotePage = ({ user }: NotePageProps) => {
           <CreateNoteCard onSubmit={onAddNote} />
         </Grid>
         <Grid item xs>
-          <Masonry
-            breakpointCols={breakpoints}
-            className={classes.masonryGrid}
-            columnClassName={classes.masonryGridCol}
-          >
-            {notes.map((note, index) => (
-              <div className={classes.masonryItem}>
-                <NoteSummaryCard
-                  note={note}
-                  onClick={() => setEditNoteState({ open: true, note, index })}
-                  onDelete={() => onDeleteNote(note.id, index)}
-                  onListItemCheck={(listIndex, value) =>
-                    onCheckListItem(note, index, listIndex, value)
-                  }
-                />
-              </div>
-            ))}
-          </Masonry>
+          {user && (
+            <Masonry
+              breakpointCols={breakpoints}
+              className={classes.masonryGrid}
+              columnClassName={classes.masonryGridCol}
+            >
+              {notes.map((note, index) => (
+                <div className={classes.masonryItem}>
+                  <NoteSummaryCard
+                    note={note}
+                    onClick={() =>
+                      setEditNoteState({ open: true, note, index })
+                    }
+                    onDelete={() => onDeleteNote(note.id, index)}
+                    onListItemCheck={(listIndex, value) =>
+                      onCheckListItem(note, index, listIndex, value)
+                    }
+                  />
+                </div>
+              ))}
+            </Masonry>
+          )}
         </Grid>
       </Grid>
       <EditNoteModal
