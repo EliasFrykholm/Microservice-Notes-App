@@ -64,7 +64,7 @@ const NoteSummaryCard = ({ note, onClick, onDelete }: NoteSummaryCardProps) => {
         />
         <CardContent className={classes.cardContent}>
           <Typography className={classes.cardContent} variant="body2">
-            {note.content}
+            {note.textContent}
           </Typography>
         </CardContent>
       </CardActionArea>

@@ -1,3 +1,5 @@
+import NoteType from './NoteType'
+
 export type ListNoteContent = {
   name?: string
   checked?: boolean
@@ -5,8 +7,10 @@ export type ListNoteContent = {
 
 interface NoteDescription {
   title: string
-  content: string | ListNoteContent[]
+  textContent?: string
+  listContent?: ListNoteContent[]
   color?: string
+  type: NoteType
 }
 
 export default NoteDescription

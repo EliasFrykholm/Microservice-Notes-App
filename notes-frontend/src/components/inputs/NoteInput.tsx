@@ -58,8 +58,8 @@ const NoteInput = ({
       case NoteType.Note:
         return (
           <TextNoteContentInput
-            value={note.content as string}
-            onChange={(value) => onChange({ ...note, content: value })}
+            value={note.textContent as string}
+            onChange={(value) => onChange({ ...note, textContent: value })}
             maxRows={maxListRows}
             minRows={minNoteRows}
           />
@@ -67,8 +67,8 @@ const NoteInput = ({
       case NoteType.List:
         return (
           <ListNoteContentInput
-            items={note.content as ListNoteContent[]}
-            onChange={(value) => onChange({ ...note, content: value })}
+            items={note.listContent as ListNoteContent[]}
+            onChange={(value) => onChange({ ...note, listContent: value })}
             maxHeight={maxNoteHeight}
           />
         )
@@ -126,7 +126,7 @@ const NoteInput = ({
           <Grid item>
             <Button
               onClick={() => {
-                onSave({ title: note.title, content: note.content })
+                onSave(note)
               }}
             >
               Save

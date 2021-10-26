@@ -37,9 +37,10 @@ const useStyles = makeStyles((theme: Theme) =>
 
 type FormState = {
   title?: string
-  content?: string | ListNoteContent[]
+  textContent?: string
+  listContent?: ListNoteContent[]
   color?: string
-  active?: NoteType
+  type?: NoteType
 }
 
 const isInputOk = (title?: string, content?: string | ListNoteContent[]) => {
@@ -55,23 +56,13 @@ const isInputOk = (title?: string, content?: string | ListNoteContent[]) => {
   return false
 }
 
-const getDefaultContent = (type: NoteType): string | ListNoteContent[] => {
-  switch (type) {
-    case NoteType.List:
-      return [{}]
-    case NoteType.Note:
-      return ''
-    default:
-      return ''
-  }
-}
-
 const getDefaultState = (type?: NoteType): FormState => {
   if (type !== undefined)
     return {
       title: '',
-      content: getDefaultContent(type),
-      active: type,
+      textContent: '',
+      listContent: [],
+      type,
     }
   return {}
 }
@@ -83,14 +74,17 @@ const CreateNoteCard = ({ onSubmit }: CreateNoteCardProps) => {
   const wrapperRef = useRef(null)
 
   const handleSubmit = () => {
-    if (isInputOk(formState.title, formState.content)) {
+    if (
+      isInputOk(formState.title, formState.listContent) ||
+      isInputOk(formState.title, formState.textContent)
+    ) {
       onSubmit(formState as NoteDescription)
     }
     setFormState(getDefaultState())
   }
 
   const handleListTypeChange = (type: NoteType | undefined) =>
-    formState.active !== type && setFormState(getDefaultState(type))
+    formState.type !== type && setFormState(getDefaultState(type))
 
   return (
     <ClickAwayListener onClickAway={handleSubmit}>
@@ -98,19 +92,22 @@ const CreateNoteCard = ({ onSubmit }: CreateNoteCardProps) => {
         className={classes.CreateNoteCard}
         elevation={3}
         onClick={() =>
-          formState.active === undefined && handleListTypeChange(NoteType.Note)
+          formState.type === undefined && handleListTypeChange(NoteType.Note)
         }
         ref={wrapperRef}
         style={{ background: formState.color }}
       >
-        {formState.active !== undefined &&
-        formState.content !== undefined &&
-        formState.title !== undefined ? (
+        {formState.type !== undefined && formState.title !== undefined ? (
           <NoteInput
-            note={{ content: formState.content, title: formState.title }}
+            note={{
+              listContent: formState.listContent,
+              textContent: formState.textContent,
+              title: formState.title,
+              type: formState.type,
+            }}
             onChange={(note) => setFormState({ ...formState, ...note })}
             onAbort={() => handleListTypeChange(undefined)}
-            type={formState.active}
+            type={formState.type}
             maxListRows={15}
             maxNoteHeight="500px"
           />

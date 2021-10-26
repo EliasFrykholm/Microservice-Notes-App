@@ -77,7 +77,7 @@ const ListNoteContentInput = ({
         <ListItem>
           <ListItemIcon>
             <Checkbox
-              value={item.checked}
+              checked={item.checked}
               onChange={(e) =>
                 handleListNoteItemChange(
                   { ...item, checked: e.target.checked },
