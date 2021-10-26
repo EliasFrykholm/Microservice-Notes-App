@@ -94,6 +94,26 @@ const NotePage = ({ user }: NotePageProps) => {
       })
   }
 
+  const onCheckListItem = (
+    note: Note,
+    noteIndex: number,
+    listIndex: number,
+    checked: boolean,
+  ) => {
+    const newNote = note
+    if (newNote.listContent) {
+      newNote.listContent[listIndex].checked = checked
+      if (user)
+        updateNote(user.token, newNote).then((data) => {
+          if (data) {
+            const newNotes = notes.slice()
+            newNotes[noteIndex] = { ...newNote, ...data }
+            setNotes(newNotes)
+          }
+        })
+    }
+  }
+
   const breakpoints = {
     default: 6,
     1700: 5,
@@ -120,6 +140,9 @@ const NotePage = ({ user }: NotePageProps) => {
                   note={note}
                   onClick={() => setEditNoteState({ open: true, note, index })}
                   onDelete={() => onDeleteNote(note.id, index)}
+                  onListItemCheck={(listIndex, value) =>
+                    onCheckListItem(note, index, listIndex, value)
+                  }
                 />
               </div>
             ))}
