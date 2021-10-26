@@ -7,7 +7,9 @@ import { ValidateToken } from './API/Auth'
 
 function App() {
   const [user, setUser] = useState<LoggedInUser>()
+  const [searchFilter, setSearchFilter] = useState('')
   const interval = useRef<number>()
+
   useEffect(() => {
     if (user) {
       interval.current = window.setInterval(() => {
@@ -26,8 +28,12 @@ function App() {
 
   return (
     <div>
-      <Navbar user={user} onLogout={() => setUser(undefined)} />
-      <NotePage user={user} />
+      <Navbar
+        user={user}
+        onLogout={() => setUser(undefined)}
+        onSearch={setSearchFilter}
+      />
+      <NotePage user={user} searchFilter={searchFilter} />
       <AuthDialog open={!user} onSignIn={setUser} />
     </div>
   )

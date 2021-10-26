@@ -18,6 +18,7 @@ import { LoggedInUser } from '../../Models/User'
 interface NavbarProps {
   user: LoggedInUser | undefined
   onLogout: () => void
+  onSearch: (text: string) => void
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -50,7 +51,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const Navbar = ({ user, onLogout }: NavbarProps) => {
+const Navbar = ({ user, onLogout, onSearch }: NavbarProps) => {
   const classes = useStyles()
   const [searchText, setSearchText] = useState('')
   return (
@@ -64,7 +65,7 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
           </Grid>
           <Grid item xs>
             <Box className={classes.search} display="flex" flexDirection="row">
-              <IconButton size="small">
+              <IconButton size="small" onClick={() => onSearch(searchText)}>
                 <Search />
               </IconButton>
               <InputBase
@@ -76,10 +77,18 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
                 }}
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
+                onKeyDown={(e) => e.key === 'enter' && onSearch(searchText)}
+                onBlur={() => onSearch(searchText)}
                 inputProps={{ 'aria-label': 'search' }}
               />
               {searchText && (
-                <IconButton size="small">
+                <IconButton
+                  size="small"
+                  onClick={() => {
+                    onSearch('')
+                    setSearchText('')
+                  }}
+                >
                   <Clear />
                 </IconButton>
               )}

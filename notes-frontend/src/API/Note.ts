@@ -8,7 +8,10 @@ export const fetchNotes = async (
   typeFilter?: NoteType,
   stringFilter?: string,
 ) => {
-  const response = await fetch(NOTES_ENDPOINT, {
+  const url = new URL(NOTES_ENDPOINT)
+  if (stringFilter) url.searchParams.append('includes', stringFilter)
+  if (typeFilter) url.searchParams.append('type', typeFilter.toString())
+  const response = await fetch(url.toString(), {
     headers: { Authorization: `Bearer ${token}` },
   })
   return response.json() // parses JSON response into native JavaScript objects

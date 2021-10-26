@@ -37,6 +37,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 type NotePageProps = {
   user: LoggedInUser | undefined
+  searchFilter?: string
 }
 
 type noteState = {
@@ -45,7 +46,7 @@ type noteState = {
   index: number
 }
 
-const NotePage = ({ user }: NotePageProps) => {
+const NotePage = ({ user, searchFilter }: NotePageProps) => {
   const [editNoteState, setEditNoteState] = useState<noteState>({
     open: false,
     note: undefined,
@@ -56,12 +57,12 @@ const NotePage = ({ user }: NotePageProps) => {
 
   useEffect(() => {
     if (user)
-      fetchNotes(user.token)
+      fetchNotes(user.token, undefined, searchFilter)
         .then((data) => {
           setNotes(data)
         })
         .catch((e) => console.log(e))
-  }, [user])
+  }, [user, searchFilter])
 
   const onAddNote = (note: NoteDescription) => {
     if (user)
