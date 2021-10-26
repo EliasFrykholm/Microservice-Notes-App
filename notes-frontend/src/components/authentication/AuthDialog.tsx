@@ -21,7 +21,7 @@ const AuthDialog = ({ open, onSignIn }: AuthDialogProps) => {
   const handleSignIn = (userCredentials: UserCredentials) => {
     Login(userCredentials)
       .then((response: LoggedInUser) => {
-        onSignIn(response)
+        if (response.token) onSignIn(response)
       })
       .catch((e) => console.log(e))
   }
