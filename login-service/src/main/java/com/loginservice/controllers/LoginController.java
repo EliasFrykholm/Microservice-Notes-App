@@ -58,6 +58,13 @@ public class LoginController {
         }
     }
 
+    @GetMapping(value = "/validate")
+    @PreAuthorize("hasRole('USER')")
+    @CrossOrigin(origins = "http://localhost:3000")
+    public ResponseEntity<String> validateToken() {
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/test")
     @PreAuthorize("hasRole('USER')")
     public String userAccess() {
