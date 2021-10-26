@@ -24,8 +24,8 @@ func (n NoteUseCase) CreateNote(ctx context.Context, user string, note *models.N
 	return n.noteRepo.CreateNote(ctx, note)
 }
 
-func (n NoteUseCase) GetNotes(ctx context.Context, user string) ([]*models.Note, error) {
-	return n.noteRepo.GetNotes(ctx, user)
+func (n NoteUseCase) GetNotes(ctx context.Context, user string, includes string, noteType int) ([]*models.Note, error) {
+	return n.noteRepo.GetNotes(ctx, user, includes, noteType)
 }
 
 func (n NoteUseCase) DeleteNote(ctx context.Context, user, id string) error {

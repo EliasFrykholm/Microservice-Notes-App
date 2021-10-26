@@ -30,8 +30,14 @@ func (r NoteRepository) CreateNote(ctx context.Context, note *models.Note) error
 	return nil
 }
 
-func (r NoteRepository) GetNotes(ctx context.Context, user string) ([]*models.Note, error) {
-	cur, err := r.db.Find(ctx, bson.M{"owner": user})
+func (r NoteRepository) GetNotes(ctx context.Context, user, includes string, noteType int) ([]*models.Note, error) {
+	cur, err := r.db.Find(ctx, bson.M{
+		"owner": user,
+		"$or": bson.A{
+			bson.M{"title": bson.M{"$regex": ".*" + includes + ".*"}},
+			bson.M{"content": bson.M{"$regex": ".*" + includes + ".*"}},
+		},
+	})
 	defer cur.Close(ctx)
 
 	if err != nil {
