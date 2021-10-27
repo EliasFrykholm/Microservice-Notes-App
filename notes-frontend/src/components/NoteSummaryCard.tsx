@@ -20,6 +20,8 @@ import {
   CheckBoxOutlineBlankOutlined,
   ExpandMore,
   ExpandLess,
+  Subject,
+  FormatListBulleted,
 } from '@material-ui/icons'
 import { createStyles, makeStyles } from '@material-ui/styles'
 import { useState } from 'react'
@@ -83,6 +85,9 @@ const NoteSummaryCard = ({
       >
         <CardActionArea onClick={onClick}>
           <CardHeader
+            avatar={
+              note.type === NoteType.Note ? <Subject /> : <FormatListBulleted />
+            }
             classes={{ root: classes.cardHeader, content: classes.cardContent }}
             action={
               <IconButton
