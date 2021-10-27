@@ -9,13 +9,8 @@ export type UserCredentials = {
   password: string
 }
 
-export type LoggedInUser = {
-  token: string
-  id: string
-  username: string
-}
-
 export type UserData = {
   jti: string
   sub: string
+  exp: Date
 }

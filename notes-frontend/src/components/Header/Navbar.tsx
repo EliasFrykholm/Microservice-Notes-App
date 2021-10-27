@@ -13,10 +13,9 @@ import {
 import { Clear, Search } from '@material-ui/icons'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { useState } from 'react'
-import { LoggedInUser } from '../../Models/User'
 
 interface NavbarProps {
-  user: LoggedInUser | undefined
+  signedIn: boolean
   onLogout: () => void
   onSearch: (text: string) => void
 }
@@ -51,7 +50,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const Navbar = ({ user, onLogout, onSearch }: NavbarProps) => {
+const Navbar = ({ signedIn, onLogout, onSearch }: NavbarProps) => {
   const classes = useStyles()
   const [searchText, setSearchText] = useState('')
   return (
@@ -95,7 +94,7 @@ const Navbar = ({ user, onLogout, onSearch }: NavbarProps) => {
             </Box>
           </Grid>
           <Grid item>
-            {user ? (
+            {signedIn ? (
               <Button color="inherit" onClick={onLogout}>
                 Logout
               </Button>

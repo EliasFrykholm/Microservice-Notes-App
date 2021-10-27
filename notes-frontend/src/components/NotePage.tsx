@@ -1,4 +1,4 @@
-import { Theme, Grid, Box } from '@material-ui/core'
+import { Theme, Grid } from '@material-ui/core'
 import { makeStyles, createStyles } from '@material-ui/core/styles'
 import Masonry from 'react-masonry-css'
 import { useState, useEffect } from 'react'
@@ -7,7 +7,6 @@ import Note from '../Models/Note'
 import EditNoteModal from './EditNoteModal'
 import CreateNoteCard from './CreateNoteCard'
 import { createNote, deleteNote, fetchNotes, updateNote } from '../API/Note'
-import { LoggedInUser } from '../Models/User'
 import NoteDescription from '../Models/NoteDescription'
 import NoteMenu from './NoteMenu'
 import NoteType from '../Models/NoteType'
@@ -41,7 +40,7 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 type NotePageProps = {
-  user: LoggedInUser | undefined
+  token: string | undefined
   searchFilter?: string
 }
 
@@ -51,7 +50,7 @@ type noteState = {
   index: number
 }
 
-const NotePage = ({ user, searchFilter }: NotePageProps) => {
+const NotePage = ({ token, searchFilter }: NotePageProps) => {
   const [editNoteState, setEditNoteState] = useState<noteState>({
     open: false,
     note: undefined,
@@ -62,24 +61,24 @@ const NotePage = ({ user, searchFilter }: NotePageProps) => {
   const classes = useStyles()
 
   useEffect(() => {
-    if (user)
-      fetchNotes(user.token, typeFilter, searchFilter)
+    if (token)
+      fetchNotes(token, typeFilter, searchFilter)
         .then((data) => {
           setNotes(data)
         })
         .catch((e) => console.log(e))
-  }, [user, searchFilter, typeFilter])
+  }, [token, searchFilter, typeFilter])
 
   const onAddNote = (note: NoteDescription) => {
-    if (user)
-      createNote(user.token, note).then((data) =>
+    if (token)
+      createNote(token, note).then((data) =>
         setNotes([...notes, { ...note, ...data }]),
       )
   }
 
   const onDeleteNote = (id: string, index: number) => {
-    if (user)
-      deleteNote(user.token, id).then((ok) => {
+    if (token)
+      deleteNote(token, id).then((ok) => {
         if (ok) {
           const newNotes = notes.slice()
           newNotes.splice(index, 1)
@@ -90,8 +89,8 @@ const NotePage = ({ user, searchFilter }: NotePageProps) => {
 
   const onSaveEditedNote = () => {
     const note = editNoteState.note as Note
-    if (user && note)
-      updateNote(user.token, note).then((data) => {
+    if (token && note)
+      updateNote(token, note).then((data) => {
         if (data && editNoteState.note) {
           const newNotes = notes.slice()
           newNotes[editNoteState.index] = { ...note, ...data }
@@ -110,8 +109,8 @@ const NotePage = ({ user, searchFilter }: NotePageProps) => {
     const newNote = note
     if (newNote.listContent) {
       newNote.listContent[listIndex].checked = checked
-      if (user)
-        updateNote(user.token, newNote).then((data) => {
+      if (token)
+        updateNote(token, newNote).then((data) => {
           if (data) {
             const newNotes = notes.slice()
             newNotes[noteIndex] = { ...newNote, ...data }
@@ -141,7 +140,7 @@ const NotePage = ({ user, searchFilter }: NotePageProps) => {
           <CreateNoteCard onSubmit={onAddNote} />
         </Grid>
         <Grid item xs>
-          {user && (
+          {token && (
             <Masonry
               breakpointCols={breakpoints}
               className={classes.masonryGrid}

@@ -4,7 +4,6 @@ import com.loginservice.dtos.LoginRequestDto;
 import com.loginservice.dtos.LoginResponseDto;
 import com.loginservice.dtos.SignupRequestDto;
 
-import com.loginservice.security.MyUserDetails;
 import com.loginservice.security.jwt.JwtUtils;
 import com.loginservice.services.SignupService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +15,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
 import java.rmi.AlreadyBoundException;
 
@@ -42,9 +39,7 @@ public class LoginController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
 
-        MyUserDetails userDetails = (MyUserDetails) authentication.getPrincipal();
-
-        return ResponseEntity.ok(new LoginResponseDto(jwt, userDetails.getId(), userDetails.getUsername()));
+        return ResponseEntity.ok(new LoginResponseDto(jwt));
     }
 
     @PostMapping(value = "/signup")

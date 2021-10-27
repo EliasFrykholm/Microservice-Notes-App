@@ -1,31 +1,29 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import jwtDecode from 'jwt-decode'
 import Navbar from './components/Header/Navbar'
 import NotePage from './components/NotePage'
 import AuthDialog from './components/authentication/AuthDialog'
-import { LoggedInUser, UserData } from './Models/User'
 import { ValidateToken } from './API/Auth'
 
 function App() {
-  const [user, setUser] = useState<LoggedInUser>()
+  const [token, setToken] = useState<string>()
   const [searchFilter, setSearchFilter] = useState('')
   const interval = useRef<number>()
 
-  const updateUser = useCallback(
-    (newUser: LoggedInUser | undefined) => {
-      localStorage.setItem('token', newUser ? newUser.token : '')
-      setUser(newUser)
+  const updateToken = useCallback(
+    (newToken: string | undefined) => {
+      localStorage.setItem('token', newToken || '')
+      setToken(newToken)
     },
-    [setUser],
+    [setToken],
   )
 
   useEffect(() => {
-    if (user) {
+    if (token) {
       interval.current = window.setInterval(() => {
-        ValidateToken(user.token).then((ok) => {
+        ValidateToken(token).then((ok) => {
           if (!ok && interval.current) {
             clearInterval(interval.current)
-            updateUser(undefined)
+            updateToken(undefined)
           }
         })
       }, 10000)
@@ -33,29 +31,28 @@ function App() {
     return () => {
       if (interval.current) clearInterval(interval.current)
     }
-  }, [user, updateUser])
+  }, [token, updateToken])
 
   useEffect(() => {
-    const token = localStorage.getItem('token')
-    if (token) {
-      ValidateToken(token).then((ok) => {
+    const localToken = localStorage.getItem('token')
+    if (localToken) {
+      ValidateToken(localToken).then((ok) => {
         if (ok) {
-          const decoded = jwtDecode<UserData>(token)
-          updateUser({ token, id: decoded.jti, username: decoded.sub })
+          updateToken(localToken)
         }
       })
     }
-  }, [updateUser])
+  }, [updateToken])
 
   return (
     <div>
       <Navbar
-        user={user}
-        onLogout={() => updateUser(undefined)}
+        signedIn={!!token}
+        onLogout={() => updateToken(undefined)}
         onSearch={setSearchFilter}
       />
-      <NotePage user={user} searchFilter={searchFilter} />
-      <AuthDialog open={!user} onSignIn={updateUser} />
+      <NotePage token={token} searchFilter={searchFilter} />
+      <AuthDialog open={!token} onSignIn={updateToken} />
     </div>
   )
 }

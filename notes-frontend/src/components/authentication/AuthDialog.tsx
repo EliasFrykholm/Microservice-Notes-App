@@ -1,13 +1,13 @@
 import { Dialog, DialogContent, DialogActions } from '@material-ui/core'
 import { useState } from 'react'
 import { Login, SignUp } from '../../API/Auth'
-import { LoggedInUser, UserCredentials, UserInfo } from '../../Models/User'
+import { UserCredentials, UserInfo } from '../../Models/User'
 import SignInForm from './SignInForm'
 import SignUpForm from './SignUpForm'
 
 type AuthDialogProps = {
   open: boolean
-  onSignIn: (user: LoggedInUser) => void
+  onSignIn: (token: string) => void
 }
 
 enum InputType {
@@ -20,8 +20,8 @@ const AuthDialog = ({ open, onSignIn }: AuthDialogProps) => {
 
   const handleSignIn = (userCredentials: UserCredentials) => {
     Login(userCredentials)
-      .then((response: LoggedInUser) => {
-        if (response.token) onSignIn(response)
+      .then((response: { token: string }) => {
+        if (response.token) onSignIn(response.token)
       })
       .catch((e) => console.log(e))
   }
