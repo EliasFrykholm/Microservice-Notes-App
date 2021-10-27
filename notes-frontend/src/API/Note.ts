@@ -10,7 +10,8 @@ export const fetchNotes = async (
 ) => {
   const url = new URL(NOTES_ENDPOINT)
   if (stringFilter) url.searchParams.append('includes', stringFilter)
-  if (typeFilter) url.searchParams.append('type', typeFilter.toString())
+  if (typeFilter !== undefined)
+    url.searchParams.append('type', typeFilter.toString())
   const response = await fetch(url.toString(), {
     headers: { Authorization: `Bearer ${token}` },
   })

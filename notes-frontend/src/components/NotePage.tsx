@@ -63,12 +63,12 @@ const NotePage = ({ user, searchFilter }: NotePageProps) => {
 
   useEffect(() => {
     if (user)
-      fetchNotes(user.token, undefined, searchFilter)
+      fetchNotes(user.token, typeFilter, searchFilter)
         .then((data) => {
           setNotes(data)
         })
         .catch((e) => console.log(e))
-  }, [user, searchFilter])
+  }, [user, searchFilter, typeFilter])
 
   const onAddNote = (note: NoteDescription) => {
     if (user)

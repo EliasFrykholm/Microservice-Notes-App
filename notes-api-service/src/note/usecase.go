@@ -8,7 +8,7 @@ import (
 
 type UseCase interface {
 	CreateNote(ctx context.Context, user string, note *models.Note) error
-	GetNotes(ctx context.Context, user, includes string, noteType int) ([]*models.Note, error)
+	GetNotes(ctx context.Context, user, includes, noteType string) ([]*models.Note, error)
 	DeleteNote(ctx context.Context, user, id string) error
 	UpdateNote(ctx context.Context, user string, note *models.Note) error
 }

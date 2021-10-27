@@ -2,6 +2,8 @@ package mongo
 
 import (
 	"context"
+	"fmt"
+	"strconv"
 
 	"github.com/EliasFrykholm/Microservices-keep-clone/notes-api-service/src/models"
 	"go.mongodb.org/mongo-driver/bson"
@@ -30,14 +32,20 @@ func (r NoteRepository) CreateNote(ctx context.Context, note *models.Note) error
 	return nil
 }
 
-func (r NoteRepository) GetNotes(ctx context.Context, user, includes string, noteType int) ([]*models.Note, error) {
-	cur, err := r.db.Find(ctx, bson.M{
-		"owner": user,
-		"$or": bson.A{
-			bson.M{"title": bson.M{"$regex": ".*" + includes + ".*"}},
-			bson.M{"content": bson.M{"$regex": ".*" + includes + ".*"}},
-		},
-	})
+func (r NoteRepository) GetNotes(ctx context.Context, user, includes, noteType string) ([]*models.Note, error) {
+	query := bson.M{"owner": user}
+	if includes != "" {
+		query["$or"] = bson.A{
+			bson.M{"title": bson.M{"$regex": primitive.Regex{Pattern: ".*" + includes + ".*", Options: "i"}}},
+			bson.M{"content": bson.M{"$regex": primitive.Regex{Pattern: ".*" + includes + ".*", Options: "i"}}},
+		}
+	}
+	typeInt, err := strconv.Atoi(noteType)
+	if err == nil {
+		fmt.Println(typeInt)
+		query["type"] = typeInt
+	}
+	cur, err := r.db.Find(ctx, query)
 	defer cur.Close(ctx)
 
 	if err != nil {

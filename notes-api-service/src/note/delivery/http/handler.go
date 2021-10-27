@@ -2,9 +2,7 @@ package http
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
-	"strconv"
 
 	"github.com/EliasFrykholm/Microservices-keep-clone/notes-api-service/src/models"
 	"github.com/EliasFrykholm/Microservices-keep-clone/notes-api-service/src/note"
@@ -63,10 +61,7 @@ func (h *Handler) Get(response http.ResponseWriter, request *http.Request) {
 	}
 
 	stringFilter := request.URL.Query().Get("includes")
-	typeFilter, err := strconv.Atoi(request.URL.Query().Get("type"))
-	if err != nil {
-		fmt.Println("Bad type filter")
-	}
+	typeFilter := request.URL.Query().Get("type")
 
 	response.Header().Add("content-type", "application/json")
 	notes, err := h.useCase.GetNotes(request.Context(), tokenAuth.UserId, stringFilter, typeFilter)
