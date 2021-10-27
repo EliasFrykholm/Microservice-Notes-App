@@ -39,6 +39,10 @@ public class JwtUtils {
         return Jwts.parser().setSigningKey(jwtSecret.getBytes("UTF-8")).parseClaimsJws(token).getBody().getSubject();
     }
 
+    public String getUserIDFromJwtToken(String token) throws UnsupportedEncodingException {
+        return Jwts.parser().setSigningKey(jwtSecret.getBytes("UTF-8")).parseClaimsJws(token).getBody().getId();
+    }
+
     public boolean validateJwtToken(String authToken) throws UnsupportedEncodingException {
         try {
             Jwts.parser().setSigningKey(jwtSecret.getBytes("UTF-8")).parseClaimsJws(authToken);

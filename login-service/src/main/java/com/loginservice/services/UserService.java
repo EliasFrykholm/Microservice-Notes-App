@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.rmi.AlreadyBoundException;
 
 @Service
-public class SignupService {
+public class UserService {
     @Autowired
     PasswordEncoder encoder;
     @Autowired

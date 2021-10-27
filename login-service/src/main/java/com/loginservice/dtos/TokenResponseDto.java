@@ -1,9 +1,9 @@
 package com.loginservice.dtos;
 
-public class LoginResponseDto {
+public class TokenResponseDto {
     private final String token;
 
-    public LoginResponseDto(String token) {
+    public TokenResponseDto(String token) {
         this.token = token;
     }
 
