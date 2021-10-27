@@ -120,10 +120,10 @@ const NotePage = ({ user, searchFilter }: NotePageProps) => {
 
   const breakpoints = {
     default: 6,
-    1700: 5,
-    1500: 4,
-    1250: 3,
-    900: 2,
+    1900: 5,
+    1580: 4,
+    1300: 3,
+    1020: 2,
     780: 1,
   }
   return (

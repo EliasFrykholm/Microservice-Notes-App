@@ -21,7 +21,10 @@ type CreateNoteCardProps = {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     CreateNoteCard: {
-      width: '600px',
+      display: 'flex',
+      flexGrow: 1,
+      maxWidth: '600px',
+      minWidth: '200px',
       paddingRight: theme.spacing(2),
       paddingLeft: theme.spacing(2),
       cursor: 'text',
