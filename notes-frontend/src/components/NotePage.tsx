@@ -1,4 +1,4 @@
-import { Theme, Grid } from '@material-ui/core'
+import { Theme, Grid, Box } from '@material-ui/core'
 import { makeStyles, createStyles } from '@material-ui/core/styles'
 import Masonry from 'react-masonry-css'
 import { useState, useEffect } from 'react'
@@ -9,6 +9,8 @@ import CreateNoteCard from './CreateNoteCard'
 import { createNote, deleteNote, fetchNotes, updateNote } from '../API/Note'
 import { LoggedInUser } from '../Models/User'
 import NoteDescription from '../Models/NoteDescription'
+import NoteMenu from './NoteMenu'
+import NoteType from '../Models/NoteType'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -53,6 +55,7 @@ const NotePage = ({ user, searchFilter }: NotePageProps) => {
     index: -1,
   })
   const [notes, setNotes] = useState<Note[]>([])
+  const [typeFilter, setTypeFilter] = useState<NoteType>()
   const classes = useStyles()
 
   useEffect(() => {
@@ -124,36 +127,44 @@ const NotePage = ({ user, searchFilter }: NotePageProps) => {
     780: 1,
   }
   return (
-    <div className={classes.noteContainer}>
-      <Grid container spacing={3} direction="column">
-        <Grid item xs container justifyContent="center">
-          <CreateNoteCard onSubmit={onAddNote} />
+    <div>
+      <Box display="flex" flexDirection="row">
+        <NoteMenu typeFilter={typeFilter} setTypeFilter={setTypeFilter} />
+        <Grid
+          className={classes.noteContainer}
+          container
+          spacing={3}
+          direction="column"
+        >
+          <Grid item xs container justifyContent="center">
+            <CreateNoteCard onSubmit={onAddNote} />
+          </Grid>
+          <Grid item xs>
+            {user && (
+              <Masonry
+                breakpointCols={breakpoints}
+                className={classes.masonryGrid}
+                columnClassName={classes.masonryGridCol}
+              >
+                {notes.map((note, index) => (
+                  <div className={classes.masonryItem}>
+                    <NoteSummaryCard
+                      note={note}
+                      onClick={() =>
+                        setEditNoteState({ open: true, note, index })
+                      }
+                      onDelete={() => onDeleteNote(note.id, index)}
+                      onListItemCheck={(listIndex, value) =>
+                        onCheckListItem(note, index, listIndex, value)
+                      }
+                    />
+                  </div>
+                ))}
+              </Masonry>
+            )}
+          </Grid>
         </Grid>
-        <Grid item xs>
-          {user && (
-            <Masonry
-              breakpointCols={breakpoints}
-              className={classes.masonryGrid}
-              columnClassName={classes.masonryGridCol}
-            >
-              {notes.map((note, index) => (
-                <div className={classes.masonryItem}>
-                  <NoteSummaryCard
-                    note={note}
-                    onClick={() =>
-                      setEditNoteState({ open: true, note, index })
-                    }
-                    onDelete={() => onDeleteNote(note.id, index)}
-                    onListItemCheck={(listIndex, value) =>
-                      onCheckListItem(note, index, listIndex, value)
-                    }
-                  />
-                </div>
-              ))}
-            </Masonry>
-          )}
-        </Grid>
-      </Grid>
+      </Box>
       <EditNoteModal
         open={editNoteState.open}
         onAbort={() => setEditNoteState({ ...editNoteState, open: false })}
