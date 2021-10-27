@@ -1,8 +1,9 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
+import jwtDecode from 'jwt-decode'
 import Navbar from './components/Header/Navbar'
 import NotePage from './components/NotePage'
 import AuthDialog from './components/authentication/AuthDialog'
-import { LoggedInUser } from './Models/User'
+import { LoggedInUser, UserData } from './Models/User'
 import { ValidateToken } from './API/Auth'
 
 function App() {
@@ -10,13 +11,21 @@ function App() {
   const [searchFilter, setSearchFilter] = useState('')
   const interval = useRef<number>()
 
+  const updateUser = useCallback(
+    (newUser: LoggedInUser | undefined) => {
+      localStorage.setItem('token', newUser ? newUser.token : '')
+      setUser(newUser)
+    },
+    [setUser],
+  )
+
   useEffect(() => {
     if (user) {
       interval.current = window.setInterval(() => {
         ValidateToken(user.token).then((ok) => {
           if (!ok && interval.current) {
             clearInterval(interval.current)
-            setUser(undefined)
+            updateUser(undefined)
           }
         })
       }, 10000)
@@ -24,17 +33,29 @@ function App() {
     return () => {
       if (interval.current) clearInterval(interval.current)
     }
-  }, [user, setUser])
+  }, [user, updateUser])
+
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    if (token) {
+      ValidateToken(token).then((ok) => {
+        if (ok) {
+          const decoded = jwtDecode<UserData>(token)
+          updateUser({ token, id: decoded.jti, username: decoded.sub })
+        }
+      })
+    }
+  }, [updateUser])
 
   return (
     <div>
       <Navbar
         user={user}
-        onLogout={() => setUser(undefined)}
+        onLogout={() => updateUser(undefined)}
         onSearch={setSearchFilter}
       />
       <NotePage user={user} searchFilter={searchFilter} />
-      <AuthDialog open={!user} onSignIn={setUser} />
+      <AuthDialog open={!user} onSignIn={updateUser} />
     </div>
   )
 }

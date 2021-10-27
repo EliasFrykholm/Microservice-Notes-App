@@ -14,3 +14,8 @@ export type LoggedInUser = {
   id: string
   username: string
 }
+
+export type UserData = {
+  jti: string
+  sub: string
+}
