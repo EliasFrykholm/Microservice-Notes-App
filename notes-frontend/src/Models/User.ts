@@ -9,8 +9,6 @@ export type UserCredentials = {
   password: string
 }
 
-export type UserData = {
-  jti: string
-  sub: string
-  exp: Date
+export type TokenData = {
+  exp: number
 }

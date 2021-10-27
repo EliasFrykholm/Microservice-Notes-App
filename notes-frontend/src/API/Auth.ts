@@ -1,5 +1,6 @@
 import {
   LOGIN_ENDPOINT,
+  REFRESH_TOKEN_ENDPOINT,
   SIGNUP_ENDPOINT,
   VALIDATE_TOKEN_ENDPOINT,
 } from './Endpoints'
@@ -36,4 +37,15 @@ export const ValidateToken = async (token: string) => {
     },
   })
   return response.ok
+}
+
+export const RefreshToken = async (token: string) => {
+  const response = await fetch(REFRESH_TOKEN_ENDPOINT, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  return response.json()
 }

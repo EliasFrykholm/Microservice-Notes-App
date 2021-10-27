@@ -1,37 +1,31 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import jwtDecode from 'jwt-decode'
 import Navbar from './components/Header/Navbar'
 import NotePage from './components/NotePage'
 import AuthDialog from './components/authentication/AuthDialog'
-import { ValidateToken } from './API/Auth'
+import { RefreshToken, ValidateToken } from './API/Auth'
+import { TokenData } from './Models/User'
 
 function App() {
   const [token, setToken] = useState<string>()
   const [searchFilter, setSearchFilter] = useState('')
-  const interval = useRef<number>()
 
-  const updateToken = useCallback(
-    (newToken: string | undefined) => {
-      localStorage.setItem('token', newToken || '')
-      setToken(newToken)
-    },
-    [setToken],
-  )
-
-  useEffect(() => {
-    if (token) {
-      interval.current = window.setInterval(() => {
-        ValidateToken(token).then((ok) => {
-          if (!ok && interval.current) {
-            clearInterval(interval.current)
-            updateToken(undefined)
-          }
-        })
-      }, 10000)
+  const updateToken = useCallback((newToken: string | undefined) => {
+    localStorage.setItem('token', newToken || '')
+    setToken(newToken)
+    if (newToken) {
+      const decoded: TokenData = jwtDecode<TokenData>(newToken)
+      if (decoded.exp) {
+        const currentDate = new Date()
+        const timeout = decoded.exp * 1000 - currentDate.getTime() - 3000
+        window.setTimeout(() => {
+          RefreshToken(newToken).then((response: { token: string }) => {
+            updateToken(response.token)
+          })
+        }, timeout)
+      }
     }
-    return () => {
-      if (interval.current) clearInterval(interval.current)
-    }
-  }, [token, updateToken])
+  }, [])
 
   useEffect(() => {
     const localToken = localStorage.getItem('token')
