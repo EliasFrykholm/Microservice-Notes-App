@@ -77,7 +77,7 @@ const Navbar = ({ user, onLogout, onSearch }: NavbarProps) => {
                 }}
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
-                onKeyDown={(e) => e.key === 'enter' && onSearch(searchText)}
+                onKeyDown={(e) => e.key === 'Enter' && onSearch(searchText)}
                 onBlur={() => onSearch(searchText)}
                 inputProps={{ 'aria-label': 'search' }}
               />
