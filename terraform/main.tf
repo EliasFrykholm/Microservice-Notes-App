@@ -132,44 +132,55 @@ provider "kubernetes" {
   token                  = data.aws_eks_cluster_auth.cluster.token
 }
 
-resource "kubernetes_deployment" "example" {
+resource "kubernetes_deployment" "mongodb" {
   metadata {
-    name = "terraform-example"
-    labels = {
-      test = "MyExampleApp"
-    }
+    name = "mongodb"
   }
 
   spec {
-    replicas = 2
+    replicas = 1
 
     selector {
       match_labels = {
-        test = "MyExampleApp"
+        app : "mongodb"
       }
     }
 
     template {
       metadata {
         labels = {
-          test = "MyExampleApp"
+          app = "mongodb"
         }
       }
 
       spec {
         container {
-          image = "nginx:1.7.8"
-          name  = "example"
+          image = "mongo:4.2.6-bionic"
+          name  = "mongod"
 
-          resources {
-            limits = {
-              cpu    = "0.5"
-              memory = "512Mi"
-            }
-            requests = {
-              cpu    = "250m"
-              memory = "50Mi"
-            }
+          port {
+            container_port = 27017
+          }
+
+          env {
+            name  = "MONGO_INITDB_ROOT_PASSWORD"
+            value = var.mongo_initdb_root_password
+          }
+
+          env {
+            name  = "MONGO_INITDB_ROOT_USERNAME"
+            value = var.mongo_initdb_root_username
+          }
+
+          volume_mount {
+            name       = "mongodb-persistent-storage"
+            mount_path = "/data/db"
+          }
+        }
+        volume {
+          name = "mongodb-persistent-storage"
+          persistent_volume_claim {
+            claim_name = "mongodb-pv-claim"
           }
         }
       }
@@ -177,19 +188,17 @@ resource "kubernetes_deployment" "example" {
   }
 }
 
-resource "kubernetes_service" "example" {
+resource "kubernetes_service" "mongodb" {
   metadata {
-    name = "terraform-example"
+    name = "mongodb"
   }
   spec {
     selector = {
-      test = "MyExampleApp"
+      app = "mongodb"
     }
     port {
-      port        = 80
-      target_port = 80
+      port        = 27017
+      target_port = 27017
     }
-
-    type = "LoadBalancer"
   }
 }
