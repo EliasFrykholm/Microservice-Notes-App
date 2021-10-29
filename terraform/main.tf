@@ -1,37 +1,34 @@
 terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = ">= 3.20.0"
-    }
-
-    random = {
-      source  = "hashicorp/random"
-      version = "3.1.0"
-    }
-
-    local = {
-      source  = "hashicorp/local"
-      version = "2.1.0"
-    }
-
-    null = {
-      source  = "hashicorp/null"
-      version = "3.1.0"
-    }
-
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = ">= 2.0.1"
-    }
+  backend "s3" {
+    bucket  = "keep-terraform-efrykhol"
+    region  = "eu-north-1"
+    key     = "global/s3/terraform.tfstate"
+    encrypt = true
   }
-
   required_version = "> 0.14"
 }
 
-provider "aws" {
-  region = var.region
+resource "aws_s3_bucket" "keep-terraform" {
+  bucket = "keep-terraform-efrykhol"
+
+  lifecycle {
+    prevent_destroy = true
+  }
+
+  versioning {
+    enabled = true
+  }
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
 }
+
+data "aws_caller_identity" "current" {}
 
 data "aws_eks_cluster" "cluster" {
   name = module.eks.cluster_id
@@ -124,12 +121,6 @@ module "eks" {
   ]
 
   worker_additional_security_group_ids = [aws_security_group.all_worker_mgmt.id]
-}
-
-provider "kubernetes" {
-  host                   = data.aws_eks_cluster.cluster.endpoint
-  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
-  token                  = data.aws_eks_cluster_auth.cluster.token
 }
 
 resource "kubernetes_deployment" "mongodb" {
