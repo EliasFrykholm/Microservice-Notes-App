@@ -202,3 +202,20 @@ resource "kubernetes_service" "mongodb" {
     }
   }
 }
+
+resource "kubernetes_persistent_volume_claim" "mongodb-pv-claim" {
+  metadata {
+    name = "mongodb-pv-claim"
+    labels = {
+      app = "mongodb"
+    }
+  }
+  spec {
+    access_modes = ["ReadWriteOnce"]
+    resources {
+      requests = {
+        storage = "1Gi"
+      }
+    }
+  }
+}
