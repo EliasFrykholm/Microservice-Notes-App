@@ -16,3 +16,18 @@ variable "mongo_initdb_root_password" {
   description = "Mongodb root password"
   type        = string
 }
+
+variable "jwt_secret" {
+  description = "Jwt secret"
+  type        = string
+}
+
+variable "registry_username" {
+  description = "Registry username"
+  type        = string
+}
+
+variable "registry_password" {
+  description = "Registry password"
+  type        = string
+}
