@@ -24,7 +24,7 @@ jobs:
           TF_VAR_mongo_initdb_root_password: ${{ secrets.MONGO_INITDB_ROOT_PASSWORD}}
           TF_VAR_jwt_secret: ${{ secrets.JWT_SECRET}}
           TF_VAR_registry_username: ${{ github.actor }}
-          TF_VAR_registry_password: ${{ secrets.GITHUB_TOKEN }}
+          TF_VAR_registry_password: ${{ secrets.GHCR_PULL_TOKEN }}
         run: terraform init -input=false
         working-directory: ./terraform
 
@@ -40,6 +40,6 @@ jobs:
           TF_VAR_mongo_initdb_root_password: ${{ secrets.MONGO_INITDB_ROOT_PASSWORD}}
           TF_VAR_jwt_secret: ${{ secrets.JWT_SECRET}}
           TF_VAR_registry_username: ${{ github.actor }}
-          TF_VAR_registry_password: ${{ secrets.GITHUB_TOKEN }}
+          TF_VAR_registry_password: ${{ secrets.GHCR_PULL_TOKEN }}
         run: terraform apply -auto-approve -input=false
         working-directory: ./terraform
