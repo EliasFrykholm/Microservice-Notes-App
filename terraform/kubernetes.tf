@@ -137,7 +137,7 @@ resource "kubernetes_deployment" "login-service" {
 
 resource "kubernetes_deployment" "notes-service" {
   metadata {
-    name = "notes"
+    name = "note"
   }
 
   spec {
@@ -145,14 +145,14 @@ resource "kubernetes_deployment" "notes-service" {
 
     selector {
       match_labels = {
-        app : "notes"
+        app : "note"
       }
     }
 
     template {
       metadata {
         labels = {
-          app = "notes"
+          app = "note"
         }
       }
 
@@ -162,7 +162,7 @@ resource "kubernetes_deployment" "notes-service" {
         }
         container {
           image = "ghcr.io/eliasfrykholm/microservices-keep-clone/notes-api:master"
-          name  = "notes"
+          name  = "note"
 
           port {
             container_port = 12345
