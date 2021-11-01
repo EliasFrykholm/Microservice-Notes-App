@@ -98,9 +98,8 @@ resource "kubernetes_deployment" "login-service" {
           name = "docker-cfg"
         }
         container {
-          image             = "ghcr.io/eliasfrykholm/microservices-keep-clone/login-api:master"
-          image_pull_policy = "Always"
-          name              = "login"
+          image = "ghcr.io/eliasfrykholm/microservices-keep-clone/login-api:master"
+          name  = "login"
 
           port {
             container_port = 8080
@@ -162,9 +161,8 @@ resource "kubernetes_deployment" "notes-service" {
           name = "docker-cfg"
         }
         container {
-          image             = "ghcr.io/eliasfrykholm/microservices-keep-clone/notes-api:master"
-          image_pull_policy = "Always"
-          name              = "notes"
+          image = "ghcr.io/eliasfrykholm/microservices-keep-clone/notes-api:master"
+          name  = "notes"
 
           port {
             container_port = 12345
@@ -216,9 +214,8 @@ resource "kubernetes_deployment" "frontend" {
           name = "docker-cfg"
         }
         container {
-          image             = "ghcr.io/eliasfrykholm/microservices-keep-clone/frontend:master"
-          image_pull_policy = "Always"
-          name              = "frontend"
+          image = "ghcr.io/eliasfrykholm/microservices-keep-clone/frontend:master"
+          name  = "frontend"
 
           port {
             container_port = 80
