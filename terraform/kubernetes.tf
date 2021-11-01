@@ -111,6 +111,16 @@ resource "kubernetes_deployment" "login-service" {
           }
 
           env {
+            name  = "SPRING_DATA_MONGODB_USERNAME"
+            value = var.mongo_initdb_root_username
+          }
+
+          env {
+            name  = "SPRING_DATA_MONGODB_PASSWORD"
+            value = var.mongo_initdb_root_password
+          }
+
+          env {
             name  = "LOGINSERVICE_APP_JWTSECRET"
             value = var.jwt_secret
           }
@@ -160,7 +170,7 @@ resource "kubernetes_deployment" "notes-service" {
 
           env {
             name  = "MONGO_URI"
-            value = "mongodb://mongodb:27017"
+            value = "mongodb://${var.mongo_initdb_root_username}:${var.mongo_initdb_root_password}@mongodb:27017"
           }
 
           env {
@@ -213,12 +223,12 @@ resource "kubernetes_deployment" "frontend" {
 
           env {
             name  = "REACT_APP_LOGIN_API_URL"
-            value = "login:8080"
+            value = "/login-api/"
           }
 
           env {
             name  = "REACT_APP_NOTES_API_URL"
-            value = "note:12345"
+            value = "/note-api/"
           }
         }
       }
