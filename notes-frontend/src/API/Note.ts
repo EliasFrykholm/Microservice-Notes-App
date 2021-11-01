@@ -1,4 +1,3 @@
-import { URLSearchParams } from 'url'
 import Note from '../Models/Note'
 import NoteDescription from '../Models/NoteDescription'
 import NoteType from '../Models/NoteType'
