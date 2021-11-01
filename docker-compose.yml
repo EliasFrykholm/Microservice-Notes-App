@@ -19,7 +19,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATA_MONGODB_HOST: mongo
+      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017
       LOGINSERVICE_APP_JWTSECRET: thiskeyisnotusedforproductiononlyfordevelopmentpurposes
       LOGINSERVICE_APP_CORSORIGIN: http://localhost:3000
   # MongoDB

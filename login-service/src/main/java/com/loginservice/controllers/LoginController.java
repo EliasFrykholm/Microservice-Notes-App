@@ -7,6 +7,7 @@ import com.loginservice.dtos.SignupRequestDto;
 import com.loginservice.security.jwt.JwtUtils;
 import com.loginservice.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -31,6 +32,7 @@ public class LoginController {
     JwtUtils jwtUtils;
 
     @PostMapping(value = "/login")
+    @CrossOrigin(value = {"${loginservice.app.corsOrigin}"})
     public ResponseEntity<TokenResponseDto> getMethodName(@RequestBody LoginRequestDto request)
             throws UnsupportedEncodingException {
         Authentication authentication = authenticationManager.authenticate(
@@ -43,6 +45,7 @@ public class LoginController {
     }
 
     @PostMapping(value = "/signup")
+    @CrossOrigin(value = {"${loginservice.app.corsOrigin}"})
     public ResponseEntity<String> getMethodName(@RequestBody SignupRequestDto request) {
         try {
             userService.signUp(request.fullName, request.username, request.password);
@@ -54,12 +57,14 @@ public class LoginController {
 
     @GetMapping(value = "/validate")
     @PreAuthorize("hasRole('USER')")
+    @CrossOrigin(value = {"${loginservice.app.corsOrigin}"})
     public ResponseEntity<String> validateToken() {
         return ResponseEntity.ok().build();
     }
 
     @GetMapping(value = "/refresh")
     @PreAuthorize("hasRole('USER')")
+    @CrossOrigin(value = {"${loginservice.app.corsOrigin}"})
     public ResponseEntity<TokenResponseDto> refreshToken(Authentication authentication) {
         try {
             String token = jwtUtils.generateJwtToken(authentication);
