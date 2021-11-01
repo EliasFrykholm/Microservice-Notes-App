@@ -1,3 +1,4 @@
+import { URLSearchParams } from 'url'
 import Note from '../Models/Note'
 import NoteDescription from '../Models/NoteDescription'
 import NoteType from '../Models/NoteType'
@@ -8,11 +9,14 @@ export const fetchNotes = async (
   typeFilter?: NoteType,
   stringFilter?: string,
 ) => {
-  const url = new URL(NOTES_ENDPOINT)
-  if (stringFilter) url.searchParams.append('includes', stringFilter)
-  if (typeFilter !== undefined)
-    url.searchParams.append('type', typeFilter.toString())
-  const response = await fetch(url.toString(), {
+  let url = NOTES_ENDPOINT
+  const params = new URLSearchParams()
+  if (stringFilter) params.append('includes', stringFilter)
+  if (typeFilter !== undefined) params.append('type', typeFilter.toString())
+  if (params.toString()) {
+    url += `?${params.toString()}`
+  }
+  const response = await fetch(url, {
     headers: { Authorization: `Bearer ${token}` },
   })
   return response.json()
