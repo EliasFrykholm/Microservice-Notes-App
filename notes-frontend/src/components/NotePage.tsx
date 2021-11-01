@@ -42,6 +42,7 @@ const useStyles = makeStyles((theme: Theme) =>
 type NotePageProps = {
   token: string | undefined
   searchFilter?: string
+  onError: (message: string) => void
 }
 
 type noteState = {
@@ -50,7 +51,7 @@ type noteState = {
   index: number
 }
 
-const NotePage = ({ token, searchFilter }: NotePageProps) => {
+const NotePage = ({ token, searchFilter, onError }: NotePageProps) => {
   const [editNoteState, setEditNoteState] = useState<noteState>({
     open: false,
     note: undefined,
@@ -66,7 +67,7 @@ const NotePage = ({ token, searchFilter }: NotePageProps) => {
         .then((data) => {
           setNotes(data)
         })
-        .catch((e) => console.log(e))
+        .catch(() => onError('Could not fetch notes'))
   }, [token, searchFilter, typeFilter])
 
   const onAddNote = (note: NoteDescription) => {

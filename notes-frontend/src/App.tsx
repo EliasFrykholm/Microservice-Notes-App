@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import jwtDecode from 'jwt-decode'
+import { Snackbar } from '@material-ui/core'
+import { Alert } from '@material-ui/lab'
 import Navbar from './components/Header/Navbar'
 import NotePage from './components/NotePage'
 import AuthDialog from './components/authentication/AuthDialog'
@@ -9,6 +11,11 @@ import { TokenData } from './Models/User'
 function App() {
   const [token, setToken] = useState<string>()
   const [searchFilter, setSearchFilter] = useState('')
+  const [error, setError] = useState<string>()
+
+  const onError = (errorMessage: string) => {
+    setError(errorMessage)
+  }
 
   const updateToken = useCallback((newToken: string | undefined) => {
     localStorage.setItem('token', newToken || '')
@@ -45,8 +52,18 @@ function App() {
         onLogout={() => updateToken(undefined)}
         onSearch={setSearchFilter}
       />
-      <NotePage token={token} searchFilter={searchFilter} />
-      <AuthDialog open={!token} onSignIn={updateToken} />
+      <NotePage token={token} searchFilter={searchFilter} onError={onError} />
+      <AuthDialog open={!token} onSignIn={updateToken} onError={onError} />
+      <Snackbar
+        open={Boolean(error)}
+        autoHideDuration={6000}
+        onClose={() => setError(undefined)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+      >
+        <Alert onClose={() => setError(undefined)} severity="error">
+          {error}
+        </Alert>
+      </Snackbar>
     </div>
   )
 }

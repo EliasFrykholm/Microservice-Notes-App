@@ -8,6 +8,7 @@ import SignUpForm from './SignUpForm'
 type AuthDialogProps = {
   open: boolean
   onSignIn: (token: string) => void
+  onError: (message: string) => void
 }
 
 enum InputType {
@@ -15,15 +16,16 @@ enum InputType {
   signUp,
 }
 
-const AuthDialog = ({ open, onSignIn }: AuthDialogProps) => {
+const AuthDialog = ({ open, onSignIn, onError }: AuthDialogProps) => {
   const [inputType, setInputType] = useState(InputType.signIn)
 
   const handleSignIn = (userCredentials: UserCredentials) => {
     Login(userCredentials)
       .then((response: { token: string }) => {
         if (response.token) onSignIn(response.token)
+        else throw new Error()
       })
-      .catch((e) => console.log(e))
+      .catch(() => onError('User not found'))
   }
 
   const handleSignUp = (userInfo: UserInfo) => {
@@ -34,7 +36,7 @@ const AuthDialog = ({ open, onSignIn }: AuthDialogProps) => {
           password: userInfo.password,
         }),
       )
-      .catch((e) => console.log(e))
+      .catch(() => onError('Sign up failed'))
   }
 
   return (
