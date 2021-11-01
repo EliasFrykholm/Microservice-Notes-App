@@ -37,7 +37,8 @@ func (r NoteRepository) GetNotes(ctx context.Context, user, includes, noteType s
 	if includes != "" {
 		query["$or"] = bson.A{
 			bson.M{"title": bson.M{"$regex": primitive.Regex{Pattern: ".*" + includes + ".*", Options: "i"}}},
-			bson.M{"content": bson.M{"$regex": primitive.Regex{Pattern: ".*" + includes + ".*", Options: "i"}}},
+			bson.M{"textContent": bson.M{"$regex": primitive.Regex{Pattern: ".*" + includes + ".*", Options: "i"}}},
+			bson.M{"listContent.name": bson.M{"$regex": primitive.Regex{Pattern: ".*" + includes + ".*", Options: "i"}}},
 		}
 	}
 	typeInt, err := strconv.Atoi(noteType)
