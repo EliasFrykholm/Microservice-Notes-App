@@ -28,15 +28,15 @@ resource "kubernetes_deployment" "mongodb" {
             container_port = 27017
           }
 
-          env {
-            name  = "MONGO_INITDB_ROOT_PASSWORD"
-            value = var.mongo_initdb_root_password
-          }
+          #   env {
+          #     name  = "MONGO_INITDB_ROOT_PASSWORD"
+          #     value = var.mongo_initdb_root_password
+          #   }
 
-          env {
-            name  = "MONGO_INITDB_ROOT_USERNAME"
-            value = var.mongo_initdb_root_username
-          }
+          #   env {
+          #     name  = "MONGO_INITDB_ROOT_USERNAME"
+          #     value = var.mongo_initdb_root_username
+          #   }
 
           volume_mount {
             name       = "mongodb-persistent-storage"
@@ -111,15 +111,15 @@ resource "kubernetes_deployment" "login-service" {
             value = "mongodb"
           }
 
-          env {
-            name  = "SPRING_DATA_MONGODB_USERNAME"
-            value = var.mongo_initdb_root_username
-          }
+          #   env {
+          #     name  = "SPRING_DATA_MONGODB_USERNAME"
+          #     value = var.mongo_initdb_root_username
+          #   }
 
-          env {
-            name  = "SPRING_DATA_MONGODB_PASSWORD"
-            value = var.mongo_initdb_root_password
-          }
+          #   env {
+          #     name  = "SPRING_DATA_MONGODB_PASSWORD"
+          #     value = var.mongo_initdb_root_password
+          #   }
 
           env {
             name  = "LOGINSERVICE_APP_JWTSECRET"
@@ -172,7 +172,7 @@ resource "kubernetes_deployment" "notes-service" {
 
           env {
             name  = "MONGO_URI"
-            value = "mongodb://${var.mongo_initdb_root_username}:${var.mongo_initdb_root_password}@mongodb:27017"
+            value = "mongodb://mongodb:27017" //${var.mongo_initdb_root_username}:${var.mongo_initdb_root_password}@
           }
 
           env {
