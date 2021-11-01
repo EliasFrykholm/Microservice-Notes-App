@@ -226,12 +226,12 @@ resource "kubernetes_deployment" "frontend" {
 
           env {
             name  = "REACT_APP_LOGIN_API_URL"
-            value = "/login-api/"
+            value = "http://localhost:80/login-api"
           }
 
           env {
             name  = "REACT_APP_NOTES_API_URL"
-            value = "/note-api/"
+            value = "http://localhost:80/note-api"
           }
         }
       }
