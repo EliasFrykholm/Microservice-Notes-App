@@ -31,7 +31,6 @@ public class LoginController {
     JwtUtils jwtUtils;
 
     @PostMapping(value = "/login")
-    @CrossOrigin(origins = "http://localhost:3000")
     public ResponseEntity<TokenResponseDto> getMethodName(@RequestBody LoginRequestDto request)
             throws UnsupportedEncodingException {
         Authentication authentication = authenticationManager.authenticate(
@@ -44,7 +43,6 @@ public class LoginController {
     }
 
     @PostMapping(value = "/signup")
-    @CrossOrigin(origins = "http://localhost:3000")
     public ResponseEntity<String> getMethodName(@RequestBody SignupRequestDto request) {
         try {
             userService.signUp(request.fullName, request.username, request.password);
@@ -56,14 +54,12 @@ public class LoginController {
 
     @GetMapping(value = "/validate")
     @PreAuthorize("hasRole('USER')")
-    @CrossOrigin(origins = "http://localhost:3000")
     public ResponseEntity<String> validateToken() {
         return ResponseEntity.ok().build();
     }
 
     @GetMapping(value = "/refresh")
     @PreAuthorize("hasRole('USER')")
-    @CrossOrigin(origins = "http://localhost:3000")
     public ResponseEntity<TokenResponseDto> refreshToken(Authentication authentication) {
         try {
             String token = jwtUtils.generateJwtToken(authentication);
