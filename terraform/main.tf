@@ -116,6 +116,7 @@ module "eks" {
       instance_type                 = "t3.micro"
       additional_userdata           = "echo foo bar"
       asg_desired_capacity          = 4
+      asg_max_size                  = 4
       additional_security_group_ids = [aws_security_group.worker_group_mgmt_one.id]
     }
   ]
