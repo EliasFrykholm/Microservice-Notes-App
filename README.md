@@ -1,4 +1,4 @@
-# Microservice Google Keep Clone
+# Microservice Notes App
 
 This is a project done purely for educational purposes, i wanted to try to gain experience in some new technologies such as AWS, Kubernetes, Golang and Terraform.
 
